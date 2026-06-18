@@ -11,6 +11,7 @@ export interface ExportProgress {
 
 function hexToRgb(hex: string): { r: number; g: number; b: number } {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+
   return result
     ? {
         r: parseInt(result[1], 16) / 255,
@@ -29,27 +30,34 @@ export async function exportToPDF(
   const total = pageElements.length + 2
   let current = 0
 
-  onProgress?.({ current: ++current, total, message: 'Creating PDF document...' })
+  onProgress?.({
+    current: ++current,
+    total,
+    message: 'Creating PDF document...',
+  })
 
   const pdfDoc = await PDFDocument.create()
-
-  // Embed font
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica)
 
   const isA4 = config.pageSize === 'A4'
-  // Points (1 inch = 72 points, A4 = 8.27 x 11.69 in, Letter = 8.5 x 11 in)
   const pageWidth = isA4 ? 595.28 : 612
   const pageHeight = isA4 ? 841.89 : 792
 
   for (let i = 0; i < pageElements.length; i++) {
     const el = pageElements[i]
+
     onProgress?.({
       current: ++current,
       total,
       message: `Rendering page ${i + 1} of ${pageElements.length}...`,
     })
 
-    const scale = config.resolution === 300 ? 4 : config.resolution === 150 ? 2 : 1
+    const scale =
+      config.resolution === 300
+        ? 4
+        : config.resolution === 150
+        ? 2
+        : 1
 
     const dataUrl = await toPng(el, {
       quality: 1,
@@ -69,9 +77,9 @@ export async function exportToPDF(
       height: pageHeight,
     })
 
-    // Page number
     if (planner.config.showPageNumbers) {
       const primaryRgb = hexToRgb(planner.config.primaryColor)
+
       page.drawText(`${i + 1} / ${pageElements.length}`, {
         x: pageWidth - 60,
         y: 20,
@@ -83,10 +91,23 @@ export async function exportToPDF(
     }
   }
 
-  onProgress?.({ current: ++current, total, message: 'Saving PDF...' })
+  onProgress?.({
+    current: ++current,
+    total,
+    message: 'Saving PDF...',
+  })
 
   const pdfBytes = await pdfDoc.save()
-  const blob = new Blob([pdfBytes], { type: 'application/pdf' })
+
+  const pdfBuffer = pdfBytes.buffer.slice(
+    pdfBytes.byteOffset,
+    pdfBytes.byteOffset + pdfBytes.byteLength
+  ) as ArrayBuffer
+
+  const blob = new Blob([pdfBuffer], {
+    type: 'application/pdf',
+  })
+
   saveAs(blob, `${planner.name.replace(/\s+/g, '-')}.pdf`)
 }
 
@@ -99,11 +120,18 @@ export async function exportToImage(
   const total = pageElements.length + 1
   let current = 0
 
-  const scale = config.resolution === 300 ? 4 : config.resolution === 150 ? 2 : 1
+  const scale =
+    config.resolution === 300
+      ? 4
+      : config.resolution === 150
+      ? 2
+      : 1
+
   const quality = config.quality / 100
 
   for (let i = 0; i < pageElements.length; i++) {
     const el = pageElements[i]
+
     onProgress?.({
       current: ++current,
       total,
@@ -127,15 +155,25 @@ export async function exportToImage(
       })
     }
 
-    const suffix = pageElements.length > 1 ? `-page-${i + 1}` : ''
-    const filename = `${planner.name.replace(/\s+/g, '-')}${suffix}.${config.format}`
+    const suffix =
+      pageElements.length > 1
+        ? `-page-${i + 1}`
+        : ''
+
+    const filename =
+      `${planner.name.replace(/\s+/g, '-')}${suffix}.${config.format}`
 
     const response = await fetch(dataUrl)
     const blob = await response.blob()
+
     saveAs(blob, filename)
   }
 
-  onProgress?.({ current: ++current, total, message: 'Done!' })
+  onProgress?.({
+    current: ++current,
+    total,
+    message: 'Done!',
+  })
 }
 
 export async function exportPlanner(
@@ -146,7 +184,7 @@ export async function exportPlanner(
 ): Promise<void> {
   if (config.format === 'pdf') {
     return exportToPDF(planner, pageElements, config, onProgress)
-  } else {
-    return exportToImage(planner, pageElements, config, onProgress)
   }
+
+  return exportToImage(planner, pageElements, config, onProgress)
 }
