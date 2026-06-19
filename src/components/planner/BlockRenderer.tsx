@@ -629,6 +629,14 @@ export const PlannerBlockRenderer: React.FC<BlockRendererProps> = ({
         return <div className="h-px w-full" style={{ backgroundColor: accentColor }} />
       case 'spacer':
         return <div style={{ height: '16px' }} />
+      case 'custom-text':
+        return (
+          <div className="text-xs leading-relaxed" style={{ color: primaryColor + 'CC', minHeight: '32px' }}>
+            {(block.config.text as string) || (
+              <span style={{ color: primaryColor + '40', fontStyle: 'italic' }}>Custom text…</span>
+            )}
+          </div>
+        )
       default:
         return null
     }

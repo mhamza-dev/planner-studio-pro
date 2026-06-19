@@ -17,7 +17,7 @@ interface TabsProps {
 
 export const Tabs: React.FC<TabsProps> = ({ value, onChange, children, className }) => (
   <TabsContext.Provider value={{ value, onChange }}>
-    <div className={cn('flex flex-col', className)}>{children}</div>
+    <div className={cn('flex flex-col min-h-0', className)}>{children}</div>
   </TabsContext.Provider>
 )
 
@@ -104,7 +104,7 @@ export const TabPanel: React.FC<TabPanelProps> = ({ value, children, className }
   const ctx = useContext(TabsContext)
   if (ctx.value !== value) return null
   return (
-    <div role="tabpanel" className={className}>
+    <div role="tabpanel" className={cn('min-h-0', className)}>
       {children}
     </div>
   )
