@@ -9,7 +9,7 @@ import {
 import { cn } from '@/utils/cn'
 import { useUIStore } from '@/store/uiStore'
 import { usePlannerStore } from '@/store/plannerStore'
-import { Tooltip } from './index'
+import Tooltip from "./Tooltip";
 
 const NAV = [
   { to: '/',           label: 'Dashboard',  icon: LayoutDashboard, end: true },
@@ -86,7 +86,7 @@ export const Sidebar: React.FC = () => {
             </NavLink>
           )
           return sidebarCollapsed
-            ? <Tooltip key={to} content={label} side="right" delay={100}>{link}</Tooltip>
+            ? <Tooltip key={to} content={label} side="right">{link}</Tooltip>
             : <div key={to}>{link}</div>
         })}
       </nav>
