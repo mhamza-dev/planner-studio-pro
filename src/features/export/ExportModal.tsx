@@ -41,7 +41,7 @@ async function exportToPDF(
 
   onProgress(elements.length + 1, elements.length + 1)
   const bytes = await doc.save()
-  saveAs(new Blob([bytes], { type: 'application/pdf' }), `${filename}.pdf`)
+  saveAs(new Blob([Uint8Array.from(bytes)], { type: 'application/pdf' }), `${filename}.pdf`)
 }
 
 async function exportToImages(

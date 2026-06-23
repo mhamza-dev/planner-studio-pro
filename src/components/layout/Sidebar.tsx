@@ -9,7 +9,7 @@ import {
 import { cn } from '@/utils/cn'
 import { useUIStore } from '@/store/uiStore'
 import { usePlannerStore } from '@/store/plannerStore'
-import { Tooltip } from './index'
+import { Tooltip } from '@/components/ui/index'
 
 const NAV = [
   { to: '/',           label: 'Dashboard',  icon: LayoutDashboard, end: true },

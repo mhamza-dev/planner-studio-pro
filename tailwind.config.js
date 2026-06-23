@@ -22,13 +22,25 @@ export default {
         },
         secondary: '#6B7280',
         background: '#F8F6F2',
+        canvas: '#F4F4F5',
         paper: '#FFFFFF',
+        ink: {
+          muted: '#71717A',
+          faint: '#A1A1AA',
+        },
+        surface: {
+          raised: '#FAFAFA',
+          sunken: '#F4F4F5',
+        },
         accent: {
           DEFAULT: '#D6CFC7',
           light: '#EDE9E4',
           dark: '#B8AFA5',
         },
-        border: '#E7E5E4',
+        border: {
+          DEFAULT: '#E7E5E4',
+          strong: '#D4D4D8',
+        },
         brand: {
           sage: '#8B9D77',
           blush: '#E8C4B8',
@@ -62,6 +74,7 @@ export default {
         '3xl': '2rem',
       },
       boxShadow: {
+        'xs': '0 1px 2px rgba(0,0,0,0.04)',
         'paper': '0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.08)',
         'paper-hover': '0 4px 12px rgba(0,0,0,0.08), 0 12px 32px rgba(0,0,0,0.12)',
         'sidebar': '2px 0 20px rgba(0,0,0,0.06)',
@@ -93,6 +106,10 @@ export default {
         pulseSoft: {
           '0%, 100%': { opacity: '1' },
           '50%': { opacity: '0.6' },
+        },
+        shimmer: {
+          '0%': { backgroundPosition: '200% 0' },
+          '100%': { backgroundPosition: '-200% 0' },
         },
       },
       typography: {

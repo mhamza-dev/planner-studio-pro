@@ -116,7 +116,7 @@ export default function TemplatesPage() {
   const navigate = useNavigate()
   const { getFiltered, searchQuery, setSearchQuery, selectedCategory, setSelectedCategory, toggleFavorite } = useTemplateStore()
   const { createPlanner } = usePlannerStore()
-  const { setActivePlanner, toast } = useUIStore()
+  const { toast } = useUIStore()
   const { trackTemplateUsed } = useAnalyticsStore()
   const [favOnly, setFavOnly] = React.useState(false)
 

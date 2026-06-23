@@ -496,19 +496,20 @@ const ProgressBarBlock: React.FC<BlockProps> = ({ block, config }) => {
 
 const SavingsTrackerBlock: React.FC<BlockProps> = ({ block, config }) => {
   const { goal=1000, current=0, currency='$' } = block.config as Record<string,unknown>
+  const currencySymbol = String(currency)
   const pct = Math.min(100,((current as number)/(goal as number))*100)
   return (
     <div>
       <div className="flex items-center justify-between mb-1">
         <span className="text-[9px] font-medium" style={{color:config.primaryColor}}>Savings Goal</span>
-        <span className="text-[9px] font-bold" style={{color:config.secondaryColor}}>{currency}{(current as number).toLocaleString()} / {currency}{(goal as number).toLocaleString()}</span>
+        <span className="text-[9px] font-bold" style={{color:config.secondaryColor}}>{currencySymbol}{(current as number).toLocaleString()} / {currencySymbol}{(goal as number).toLocaleString()}</span>
       </div>
       <div className="h-3 rounded-full overflow-hidden" style={{backgroundColor:`${config.accentColor}40`}}>
         <div className="h-full rounded-full" style={{width:`${pct}%`,backgroundColor:config.primaryColor}}/>
       </div>
       <div className="flex justify-between mt-1">
         {Array.from({length:5}).map((_,i)=>(
-          <div key={i} className="text-[7px]" style={{color:`${config.primaryColor}50`}}>{Math.round((i/4)*(goal as number)/(1000))>0?`${currency}${Math.round((i/4)*(goal as number)/1000)}k`:currency+'0'}</div>
+          <div key={i} className="text-[7px]" style={{color:`${config.primaryColor}50`}}>{Math.round((i/4)*(goal as number)/(1000))>0?`${currencySymbol}${Math.round((i/4)*(goal as number)/1000)}k`:currencySymbol+'0'}</div>
         ))}
       </div>
     </div>
