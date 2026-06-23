@@ -31,29 +31,28 @@ export const Sidebar: React.FC = () => {
       initial={false}
       animate={{ width: sidebarCollapsed ? 56 : 220 }}
       transition={{ duration: 0.22, ease: [0.16,1,0.3,1] }}
-      className="h-full shrink-0 bg-paper border-r border-border flex flex-col overflow-hidden relative z-10"
-      style={{ boxShadow: '1px 0 0 #E4E4E7' }}
+      className="h-full shrink-0 bg-primary text-white flex flex-col overflow-hidden relative z-10 shadow-sidebar"
       aria-label="Main navigation"
     >
       {/* Logo */}
-      <div className="h-14 flex items-center px-3 border-b border-border shrink-0">
+      <div className="h-16 flex items-center px-3 border-b border-white/10 shrink-0">
         <AnimatePresence mode="wait">
           {sidebarCollapsed ? (
             <motion.div key="icon"
               initial={{opacity:0,scale:0.8}} animate={{opacity:1,scale:1}} exit={{opacity:0,scale:0.8}}
-              className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center mx-auto">
-              <Pen size={14} className="text-white"/>
+              className="w-8 h-8 rounded-xl bg-white text-primary flex items-center justify-center mx-auto shadow-card">
+              <Pen size={14}/>
             </motion.div>
           ) : (
             <motion.div key="full"
               initial={{opacity:0,x:-8}} animate={{opacity:1,x:0}} exit={{opacity:0,x:-8}}
               className="flex items-center gap-2.5 overflow-hidden">
-              <div className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center shrink-0">
-                <Pen size={14} className="text-white"/>
+              <div className="w-9 h-9 rounded-xl bg-white text-primary flex items-center justify-center shrink-0 shadow-card">
+                <Pen size={15}/>
               </div>
               <div className="min-w-0">
-                <div className="text-sm font-bold text-primary leading-none font-display">Planner</div>
-                <div className="text-[11px] text-ink-muted leading-none mt-0.5">Studio Pro</div>
+                <div className="text-sm font-bold text-white leading-none font-display">Planner</div>
+                <div className="text-[11px] text-slate-300 leading-none mt-0.5">Studio Pro</div>
               </div>
             </motion.div>
           )}
@@ -69,8 +68,8 @@ export const Sidebar: React.FC = () => {
               className={cn(
                 'flex items-center gap-2.5 h-9 px-2.5 rounded-lg text-[13px] font-medium transition-all duration-100',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30',
-                isActive ? 'bg-primary text-white' : 'text-ink-muted hover:bg-surface-raised hover:text-primary',
-                sidebarCollapsed && 'justify-center px-0'
+                isActive ? 'bg-white text-primary shadow-card' : 'text-slate-300 hover:bg-white/10 hover:text-white',
+                sidebarCollapsed && 'mx-auto w-10 justify-center gap-0 px-0'
               )}
               aria-current={isActive ? 'page' : undefined}
             >
@@ -92,21 +91,21 @@ export const Sidebar: React.FC = () => {
       </nav>
 
       {/* Bottom */}
-      <div className="px-2 pb-3 pt-2 border-t border-border shrink-0 space-y-1">
+      <div className="px-2 pb-3 pt-2 border-t border-white/10 shrink-0 space-y-1">
         {!sidebarCollapsed && (
           <motion.div initial={{opacity:0}} animate={{opacity:1}}
-            className="mb-2 mx-0.5 p-3 rounded-xl bg-accent/5 border border-accent/20">
+            className="mb-2 mx-0.5 p-3 rounded-xl bg-white/10 border border-white/10">
             <div className="flex items-center gap-1.5 mb-1">
-              <Sparkles size={11} className="text-accent shrink-0"/>
-              <span className="text-xs font-semibold text-accent">Pro Plan</span>
+              <Sparkles size={11} className="text-blue-200 shrink-0"/>
+              <span className="text-xs font-semibold text-white">Pro Plan</span>
             </div>
-            <p className="text-[11px] text-ink-muted leading-relaxed">Unlimited exports & premium templates</p>
+            <p className="text-[11px] text-slate-300 leading-relaxed">Unlimited exports & premium templates</p>
           </motion.div>
         )}
         <button onClick={toggleSidebar}
           className={cn(
-            'flex items-center gap-2 w-full h-8 px-2.5 rounded-lg text-xs font-medium text-ink-muted hover:bg-surface-raised hover:text-primary transition-colors',
-            sidebarCollapsed && 'justify-center px-0'
+            'flex items-center gap-2 w-full h-8 px-2.5 rounded-lg text-xs font-medium text-slate-300 hover:bg-white/10 hover:text-white transition-colors',
+            sidebarCollapsed && 'mx-auto w-10 justify-center gap-0 px-0'
           )}
           aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >

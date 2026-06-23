@@ -218,7 +218,14 @@ export const TEMPLATES: Template[] = [
     id: 'tpl_creative_content', name: 'Content Calendar', type: 'creative',
     description: 'Social media content planning with platform tracking and post ideas.',
     thumbnail: '', category: 'Creative', tags: ['content', 'social media', 'calendar'],
-    pages: PLANNER_TYPE_PAGES.creative(), isFavorite: false, isPremium: false, downloads: 4502,
+    pages: [
+      makePage('Content Calendar', 0, [
+        makeBlock('date-header', 'Month', 0, { showMonth: true, showYear: true }),
+        makeBlock('social-calendar', 'Publishing Calendar', 1, { rows: 14 }),
+        makeBlock('kanban', 'Content Pipeline', 2, { columns: ['Ideas', 'Draft', 'Design', 'Posted'], itemsPerColumn: 3 }),
+        makeBlock('etsy-listing', 'Offer Notes', 3, { rows: 4 }),
+      ]),
+    ], isFavorite: false, isPremium: false, downloads: 4502,
     accentHue: '262', config: cfg({ primaryColor: '#2D1B69', secondaryColor: '#6366F1', accentColor: '#C7D2FE' }),
   },
   {
@@ -255,13 +262,198 @@ export const TEMPLATES: Template[] = [
     id: 'tpl_life_travel', name: 'Travel Planner', type: 'creative',
     description: 'Trip planning with itinerary, packing list, and budget tracking.',
     thumbnail: '', category: 'Life', tags: ['travel', 'itinerary', 'packing'],
-    pages: PLANNER_TYPE_PAGES.creative(), isFavorite: false, isPremium: false, downloads: 7102,
+    pages: [
+      makePage('Trip Planner', 0, [
+        makeBlock('cover-title', 'Cover', 0, { title: 'Travel Planner', subtitle: 'Itinerary, budget, packing' }),
+        makeBlock('week-grid', 'Itinerary', 1, { showTimeSlots: false }),
+        makeBlock('checklist', 'Packing List', 2, { categories: ['Clothes', 'Documents', 'Toiletries'], itemsPerCategory: 6 }),
+        makeBlock('budget-row', 'Trip Budget', 3, { rows: 6 }),
+        makeBlock('notes', 'Reservation Notes', 4, { lines: 5 }),
+      ]),
+    ], isFavorite: false, isPremium: false, downloads: 7102,
     accentHue: '215', config: cfg({ primaryColor: '#0C2340', secondaryColor: '#1B5E8C', accentColor: '#B8D4E8' }),
+  },
+
+  // ── ETSY-READY DIGITAL PRODUCTS ────────────────────────────────────────────
+  {
+    id: 'tpl_etsy_shop_launch', name: 'Etsy Shop Launch Kit', type: 'business',
+    description: 'Listing prep, SEO tags, launch checklist, and product workflow for digital sellers.',
+    thumbnail: '', category: 'Etsy', tags: ['etsy', 'seo', 'shop launch', 'digital product'],
+    pages: [
+      makePage('Shop Launch', 0, [
+        makeBlock('cover-title', 'Cover', 0, { title: 'Etsy Shop Launch Kit', subtitle: 'Plan, list, launch' }),
+        makeBlock('etsy-listing', 'Listing Prep', 1, { rows: 6 }),
+        makeBlock('checklist', 'Launch Checklist', 2, { categories: ['Before listing', 'Publishing', 'After launch'], itemsPerCategory: 5 }),
+        makeBlock('social-calendar', 'Promo Calendar', 3, { rows: 10 }),
+      ]),
+    ], isFavorite: false, isPremium: true, downloads: 8120,
+    accentHue: '262', config: cfg({ primaryColor: '#2D1B69', secondaryColor: '#6366F1', accentColor: '#C7D2FE' }),
+  },
+  {
+    id: 'tpl_etsy_content_seller', name: 'Digital Product Content Planner', type: 'creative',
+    description: 'A content calendar for creators selling planners, printables, stickers, and templates.',
+    thumbnail: '', category: 'Etsy', tags: ['content calendar', 'printables', 'creator', 'marketing'],
+    pages: [
+      makePage('Content Planner', 0, [
+        makeBlock('date-header', 'Month', 0, { showMonth: true, showYear: true }),
+        makeBlock('social-calendar', 'Content Calendar', 1, { rows: 14 }),
+        makeBlock('kanban', 'Content Pipeline', 2, { columns: ['Ideas', 'Design', 'Scheduled', 'Posted'], itemsPerColumn: 3 }),
+        makeBlock('goal-section', 'Launch Goals', 3, { count: 4 }),
+      ]),
+    ], isFavorite: false, isPremium: false, downloads: 6933,
+    accentHue: '330', config: cfg({ primaryColor: '#4A1942', secondaryColor: '#9D174D', accentColor: '#FBCFE8' }),
+  },
+  {
+    id: 'tpl_etsy_printable_bundle', name: 'Printable Bundle Builder', type: 'workbook',
+    description: 'Plan a sellable printable bundle with cover pages, inserts, bonuses, and mockup notes.',
+    thumbnail: '', category: 'Etsy', tags: ['printable bundle', 'mockups', 'planner inserts'],
+    pages: [
+      makePage('Bundle Plan', 0, [
+        makeBlock('cover-title', 'Cover', 0, { title: 'Printable Bundle', subtitle: 'Product planning workbook' }),
+        makeBlock('table-of-contents', 'Bundle Contents', 1, { entries: 8 }),
+        makeBlock('etsy-listing', 'Listing Assets', 2, { rows: 6 }),
+        makeBlock('vision-board', 'Mockup Ideas', 3, { slots: 6 }),
+      ]),
+    ], isFavorite: false, isPremium: true, downloads: 5402,
+    accentHue: '43', config: cfg({ primaryColor: '#451A03', secondaryColor: '#B45309', accentColor: '#FDE68A' }),
+  },
+
+  // ── HOME / FAMILY / LIFE ───────────────────────────────────────────────────
+  {
+    id: 'tpl_home_command_center', name: 'Home Command Center', type: 'weekly',
+    description: 'Weekly family dashboard with meals, cleaning zones, errands, and notes.',
+    thumbnail: '', category: 'Home', tags: ['family', 'home', 'cleaning', 'meals'],
+    pages: [
+      makePage('Home Week', 0, [
+        makeBlock('date-header', 'Week', 0, { showWeekNumber: true }),
+        makeBlock('week-grid', 'Weekly Overview', 1, { showTimeSlots: false }),
+        makeBlock('meal-plan-week', 'Meal Plan', 2),
+        makeBlock('cleaning-zone', 'Cleaning Zones', 3, { itemsPerRoom: 4 }),
+        makeBlock('todo-list', 'Errands', 4, { count: 8 }),
+      ]),
+    ], isFavorite: false, isPremium: false, downloads: 7710,
+    accentHue: '150', config: cfg({ primaryColor: '#1A3A2A', secondaryColor: '#52796F', accentColor: '#CAD2C5' }),
+  },
+  {
+    id: 'tpl_home_meal_prep', name: 'Meal Prep Planner', type: 'wellness',
+    description: 'Weekly meals, grocery planning, hydration, and nutrition notes.',
+    thumbnail: '', category: 'Home', tags: ['meal prep', 'grocery', 'wellness', 'family'],
+    pages: [
+      makePage('Meal Prep', 0, [
+        makeBlock('meal-plan-week', 'Weekly Meals', 0),
+        makeBlock('checklist', 'Grocery List', 1, { categories: ['Produce', 'Protein', 'Pantry'], itemsPerCategory: 6 }),
+        makeBlock('water-tracker', 'Hydration', 2, { goal: 8 }),
+        makeBlock('notes', 'Prep Notes', 3, { lines: 5 }),
+      ]),
+    ], isFavorite: false, isPremium: false, downloads: 6444,
+    accentHue: '175', config: cfg({ primaryColor: '#042F2E', secondaryColor: '#0D9488', accentColor: '#99F6E4' }),
+  },
+  {
+    id: 'tpl_life_password_keeper', name: 'Password Keeper', type: 'worksheet',
+    description: 'Printable account and password tracker with clean alphabetical rows.',
+    thumbnail: '', category: 'Life', tags: ['password', 'accounts', 'home binder'],
+    pages: [
+      makePage('Password Log', 0, [
+        makeBlock('cover-title', 'Cover', 0, { title: 'Password Keeper', subtitle: 'Account reference log' }),
+        makeBlock('password-log', 'Accounts', 1, { rows: 14 }),
+      ]),
+    ], isFavorite: false, isPremium: false, downloads: 5888,
+    accentHue: '220', config: cfg({ primaryColor: '#0F172A', secondaryColor: '#475569', accentColor: '#E2E8F0' }),
+  },
+  {
+    id: 'tpl_life_adhd_focus', name: 'ADHD Focus Planner', type: 'daily',
+    description: 'Low-friction daily focus page with brain dump, priority matrix, timers, and wins.',
+    thumbnail: '', category: 'Life', tags: ['adhd', 'focus', 'simple', 'productivity'],
+    pages: [
+      makePage('Focus Day', 0, [
+        makeBlock('date-header', 'Today', 0, { showDay: true, showDate: true }),
+        makeBlock('brain-dump', 'Brain Dump', 1, { lines: 8 }),
+        makeBlock('priority-matrix', 'Decision Matrix', 2),
+        makeBlock('focus-block', 'One Thing', 3, { prompt: 'One thing that matters:', lines: 4 }),
+        makeBlock('gratitude', 'Wins', 4, { count: 3 }),
+      ]),
+    ], isFavorite: false, isPremium: true, downloads: 7362,
+    accentHue: '215', config: cfg({ primaryColor: '#0C2340', secondaryColor: '#1B5E8C', accentColor: '#B8D4E8' }),
+  },
+  {
+    id: 'tpl_life_vision_goals', name: 'Vision & Goals Board', type: 'creative',
+    description: 'Vision board, quarterly goals, habits, and reflection pages for manifestation-style planners.',
+    thumbnail: '', category: 'Life', tags: ['vision board', 'goals', 'manifestation', 'reflection'],
+    pages: [
+      makePage('Vision Board', 0, [
+        makeBlock('cover-title', 'Cover', 0, { title: 'Vision & Goals', subtitle: 'Dream it, plan it, do it' }),
+        makeBlock('vision-board', 'Vision Board', 1, { slots: 9 }),
+        makeBlock('goal-section', 'Quarter Goals', 2, { count: 6 }),
+        makeBlock('habit-grid', 'Aligned Habits', 3, { habitCount: 6, daysInMonth: 31 }),
+      ]),
+    ], isFavorite: false, isPremium: false, downloads: 8455,
+    accentHue: '330', config: cfg({ primaryColor: '#4A1942', secondaryColor: '#C0695C', accentColor: '#F5D0CA' }),
+  },
+  {
+    id: 'tpl_business_client_project', name: 'Client Project Planner', type: 'business',
+    description: 'Freelancer-friendly client brief, milestone tracker, meeting notes, and delivery checklist.',
+    thumbnail: '', category: 'Business', tags: ['client', 'freelance', 'project', 'milestones'],
+    pages: [
+      makePage('Client Project', 0, [
+        makeBlock('cover-title', 'Cover', 0, { title: 'Client Project Planner', subtitle: 'Brief, milestones, delivery' }),
+        makeBlock('focus-block', 'Project Brief', 1, { prompt: 'Client goal and scope:', lines: 6 }),
+        makeBlock('project-tracker', 'Milestones', 2, { count: 5 }),
+        makeBlock('meeting-notes', 'Meeting Notes', 3, { attendeeCount: 4, actionItems: 6 }),
+        makeBlock('checklist', 'Delivery Checklist', 4, { categories: ['Draft', 'Review', 'Final'], itemsPerCategory: 4 }),
+      ]),
+    ], isFavorite: false, isPremium: true, downloads: 6230,
+    accentHue: '215', config: cfg({ primaryColor: '#0C2340', secondaryColor: '#1B5E8C', accentColor: '#B8D4E8' }),
+  },
+  {
+    id: 'tpl_teacher_lesson_week', name: 'Teacher Lesson Planner', type: 'student',
+    description: 'Weekly lesson plan with class schedule, objectives, resources, and assessment notes.',
+    thumbnail: '', category: 'Academic', tags: ['teacher', 'lesson plan', 'classroom', 'school'],
+    pages: [
+      makePage('Lesson Week', 0, [
+        makeBlock('date-header', 'Week', 0, { showWeekNumber: true }),
+        makeBlock('class-schedule', 'Class Schedule', 1, { periods: 7 }),
+        makeBlock('week-grid', 'Lesson Overview', 2, { showTimeSlots: false }),
+        makeBlock('goal-section', 'Learning Objectives', 3, { count: 5 }),
+        makeBlock('notes', 'Assessment Notes', 4, { lines: 6 }),
+      ]),
+    ], isFavorite: false, isPremium: false, downloads: 4920,
+    accentHue: '33', config: cfg({ primaryColor: '#3D1A08', secondaryColor: '#A07840', accentColor: '#F2C49B' }),
+  },
+  {
+    id: 'tpl_wedding_planner', name: 'Wedding Planner', type: 'creative',
+    description: 'Elegant printable wedding planner with timeline, budget, vendor contacts, and checklist.',
+    thumbnail: '', category: 'Life', tags: ['wedding', 'event', 'vendor', 'budget'],
+    pages: [
+      makePage('Wedding Plan', 0, [
+        makeBlock('cover-title', 'Cover', 0, { title: 'Wedding Planner', subtitle: 'Timeline, budget, vendors' }),
+        makeBlock('countdown', 'Wedding Countdown', 1, { label: 'Wedding Day' }),
+        makeBlock('budget-row', 'Wedding Budget', 2, { rows: 8 }),
+        makeBlock('contact-card', 'Vendor Contacts', 3, { rows: 4 }),
+        makeBlock('checklist', 'Planning Checklist', 4, { categories: ['Venue', 'Attire', 'Guests'], itemsPerCategory: 5 }),
+      ]),
+    ], isFavorite: false, isPremium: true, downloads: 7940,
+    accentHue: '345', config: cfg({ primaryColor: '#4A1942', secondaryColor: '#9D174D', accentColor: '#FBCFE8' }),
+  },
+  {
+    id: 'tpl_selfcare_reset', name: 'Self-Care Reset', type: 'wellness',
+    description: 'Gentle wellness reset with mood, sleep, hydration, gratitude, and weekly care actions.',
+    thumbnail: '', category: 'Wellness', tags: ['self care', 'mood', 'sleep', 'reset'],
+    pages: [
+      makePage('Self-Care Reset', 0, [
+        makeBlock('date-header', 'Today', 0, { showDay: true, showDate: true }),
+        makeBlock('mood-tracker', 'Mood Check', 1),
+        makeBlock('sleep-tracker', 'Sleep', 2),
+        makeBlock('water-tracker', 'Hydration', 3, { goal: 8 }),
+        makeBlock('checklist', 'Care Actions', 4, { categories: ['Body', 'Mind', 'Home'], itemsPerCategory: 4 }),
+        makeBlock('gratitude', 'Gratitude', 5, { count: 3 }),
+      ]),
+    ], isFavorite: false, isPremium: false, downloads: 8380,
+    accentHue: '175', config: cfg({ primaryColor: '#042F2E', secondaryColor: '#0D9488', accentColor: '#99F6E4' }),
   },
 ]
 
 export const TEMPLATE_CATEGORIES = [
   'All', 'Daily', 'Weekly', 'Monthly',
   'Tracker', 'Finance', 'Wellness', 'Fitness',
-  'Academic', 'Business', 'Journal', 'Creative', 'Life',
+  'Academic', 'Business', 'Journal', 'Creative', 'Life', 'Home', 'Etsy',
 ]

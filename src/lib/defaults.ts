@@ -8,6 +8,8 @@ export const DEFAULT_BLOCK_STYLE: BlockStyle = {
   borderRadius: 4,
   padding: 8,
   marginBottom: 8,
+  textColor: '',
+  accentColor: '',
 }
 
 export const DEFAULT_CONFIG: PlannerConfig = {
@@ -96,6 +98,12 @@ export function getDefaultBlockConfig(type: BlockType): Record<string, unknown> 
     case 'icon-block': return { icon: 'star', size: 24, color: '#6366F1' }
     case 'divider-styled': return { style: 'solid', thickness: 1 }
     case 'accent-shape': return { shape: 'underline', width: 40, color: '#6366F1' }
+    case 'social-calendar': return { rows: 7 }
+    case 'etsy-listing': return { rows: 6 }
+    case 'password-log': return { rows: 8 }
+    case 'cleaning-zone': return { rooms: ['Kitchen', 'Bath', 'Bedroom', 'Living'], itemsPerRoom: 4 }
+    case 'meal-plan-week': return { meals: ['Breakfast', 'Lunch', 'Dinner', 'Snack'] }
+    case 'vision-board': return { slots: 6 }
     default: return {}
   }
 }

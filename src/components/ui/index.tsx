@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, createContext, useContext } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { CheckCircle, AlertCircle, Info, AlertTriangle, X } from 'lucide-react'
+import { CheckCircle, AlertCircle, Info, AlertTriangle, X, Check } from 'lucide-react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/utils/cn'
 import type { Toast } from '@/types'
@@ -100,40 +100,98 @@ export const Tooltip: React.FC<TooltipProps> = ({ content, children, side = 'top
 export interface DropdownItem {
   label?: string; icon?: React.ReactNode; onClick?: () => void
   danger?: boolean; disabled?: boolean; separator?: boolean; description?: string
+  active?: boolean; shortcut?: string
 }
-interface DropdownProps { trigger: React.ReactElement; items: DropdownItem[]; align?: 'left'|'right'; className?: string }
-export const Dropdown: React.FC<DropdownProps> = ({ trigger, items, align = 'left', className }) => {
+interface DropdownProps {
+  trigger: React.ReactElement
+  items: DropdownItem[]
+  align?: 'left'|'right'
+  className?: string
+  width?: 'sm' | 'md' | 'lg'
+}
+export const Dropdown: React.FC<DropdownProps> = ({ trigger, items, align = 'left', className, width = 'md' }) => {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
+  const widths = { sm: 'min-w-[180px]', md: 'min-w-[220px]', lg: 'min-w-[280px]' }
+
   useEffect(() => {
     const h = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false) }
+    const k = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false)
+    }
     document.addEventListener('mousedown', h)
-    return () => document.removeEventListener('mousedown', h)
+    document.addEventListener('keydown', k)
+    return () => {
+      document.removeEventListener('mousedown', h)
+      document.removeEventListener('keydown', k)
+    }
   }, [])
+
   return (
     <div ref={ref} className={cn('relative inline-flex', className)}>
-      {React.cloneElement(trigger, { onClick: (e: React.MouseEvent) => { e.stopPropagation(); setOpen(o => !o) } })}
+      {React.cloneElement(trigger, {
+        onClick: (e: React.MouseEvent) => { e.stopPropagation(); setOpen(o => !o) },
+        'aria-expanded': open,
+        'aria-haspopup': 'menu',
+        className: cn(trigger.props.className, open && 'ring-2 ring-accent/30 bg-white'),
+      })}
       <AnimatePresence>
         {open && (
-          <motion.div initial={{opacity:0,y:-4,scale:0.97}} animate={{opacity:1,y:0,scale:1}} exit={{opacity:0,y:-4,scale:0.97}}
-            transition={{duration:0.12}}
-            className={cn('absolute z-50 top-full mt-1 min-w-[168px] bg-paper rounded-xl border border-border shadow-float overflow-hidden py-1', align==='right' ? 'right-0' : 'left-0')}
+          <motion.div
+            initial={{ opacity: 0, y: -6, scale: 0.96, filter: 'blur(4px)' }}
+            animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+            exit={{ opacity: 0, y: -4, scale: 0.97, filter: 'blur(3px)' }}
+            transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] }}
+            className={cn(
+              'absolute z-50 top-full mt-2 rounded-xl border border-white/80 bg-white/90 p-1.5 shadow-float backdrop-blur-xl',
+              'before:absolute before:inset-x-3 before:-top-px before:h-px before:bg-white/90',
+              widths[width],
+              align === 'right' ? 'right-0 origin-top-right' : 'left-0 origin-top-left',
+            )}
             role="menu"
           >
             {items.map((item, i) => item.separator
-              ? <div key={i} className="h-px bg-border my-1"/>
+              ? <div key={i} className="my-1.5 h-px bg-gradient-to-r from-transparent via-border to-transparent"/>
               : (
                 <button key={i} role="menuitem" disabled={item.disabled}
-                  onClick={() => { item.onClick?.(); setOpen(false) }}
-                  className={cn('flex items-center gap-2.5 w-full text-left px-3 py-2 text-sm transition-colors duration-100',
-                    item.danger ? 'text-red-600 hover:bg-red-50' : 'text-primary hover:bg-surface-raised',
-                    item.disabled && 'opacity-40 cursor-not-allowed')}
+                  onClick={(e) => { e.stopPropagation(); item.onClick?.(); setOpen(false) }}
+                  className={cn(
+                    'group flex w-full items-center gap-3 rounded-lg px-2.5 py-2.5 text-left transition-all duration-150',
+                    'focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/30',
+                    item.danger
+                      ? 'text-red-600 hover:bg-red-50 hover:text-red-700'
+                      : item.active
+                        ? 'bg-accent/10 text-accent'
+                        : 'text-primary hover:bg-primary hover:text-white',
+                    item.disabled && 'cursor-not-allowed opacity-40 hover:bg-transparent hover:text-primary',
+                  )}
                 >
-                  {item.icon && <span className="shrink-0 w-4 h-4 flex items-center justify-center text-inherit opacity-70">{item.icon}</span>}
-                  <div className="min-w-0">
-                    <div className="truncate">{item.label}</div>
-                    {item.description && <div className="text-[11px] text-ink-muted truncate mt-0.5">{item.description}</div>}
+                  <span className={cn(
+                    'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border transition-colors',
+                    item.danger
+                      ? 'border-red-100 bg-red-50 text-red-600'
+                      : item.active
+                        ? 'border-blue-100 bg-blue-50 text-accent'
+                        : 'border-border bg-white text-ink-muted group-hover:border-white/20 group-hover:bg-white/10 group-hover:text-white',
+                  )}>
+                    {item.icon || (item.active ? <Check size={14}/> : null)}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="truncate text-sm font-semibold leading-tight">{item.label}</div>
+                    {item.description && (
+                      <div className={cn(
+                        'mt-0.5 truncate text-[11px] leading-tight',
+                        item.danger ? 'text-red-400' : 'text-ink-muted group-hover:text-white/65',
+                      )}>
+                        {item.description}
+                      </div>
+                    )}
                   </div>
+                  {item.shortcut && (
+                    <span className="shrink-0 rounded-md border border-border bg-white/80 px-1.5 py-0.5 text-[10px] font-semibold text-ink-faint group-hover:border-white/20 group-hover:bg-white/10 group-hover:text-white/70">
+                      {item.shortcut}
+                    </span>
+                  )}
                 </button>
               )
             )}

@@ -20,12 +20,14 @@ export type BlockType =
   // Planning
   | 'time-slots' | 'todo-list' | 'goal-section' | 'priority-matrix'
   | 'week-grid' | 'month-calendar' | 'countdown' | 'kanban' | 'checklist'
+  | 'social-calendar' | 'etsy-listing'
   // Writing
   | 'notes' | 'reflection' | 'gratitude' | 'custom-text' | 'quote-block'
   | 'brain-dump' | 'focus-block' | 'meeting-notes' | 'reading-log'
   // Tracking
   | 'habit-grid' | 'mood-tracker' | 'water-tracker' | 'sleep-tracker'
-  | 'workout-log' | 'meal-planner' | 'progress-bar' | 'savings-tracker' | 'contact-card'
+  | 'workout-log' | 'meal-planner' | 'meal-plan-week' | 'progress-bar' | 'savings-tracker' | 'contact-card'
+  | 'password-log' | 'cleaning-zone' | 'vision-board'
   // Finance
   | 'budget-row' | 'expense-tracker'
   // Academic

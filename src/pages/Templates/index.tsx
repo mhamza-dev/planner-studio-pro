@@ -58,15 +58,19 @@ function TemplateCard({ template, onUse, onToggleFav }: {
 
   return (
     <motion.div layout initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} exit={{opacity:0,scale:0.97}}
-      className="group bg-paper rounded-xl border border-border shadow-sm overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+      className="group glass-panel rounded-xl overflow-hidden hover:shadow-card-hover hover:-translate-y-1 transition-all duration-200">
       {/* Thumbnail */}
-      <div className={cn('relative h-36 flex items-center justify-center bg-gradient-to-br', bg)}>
+      <div className={cn('relative h-40 flex items-center justify-center bg-gradient-to-br', bg)}>
+        <div className="absolute inset-x-8 top-6 h-16 rounded-full bg-white/60 blur-2xl"/>
         {/* Paper preview */}
-        <div className="w-14 h-18 bg-white rounded-lg shadow-md border border-white/80 p-1.5 flex flex-col gap-1">
-          <div className="h-1.5 w-8 rounded-full bg-primary/20"/>
+        <div className="relative w-20 h-24 bg-white rounded-lg shadow-paper border border-white/90 p-2 flex flex-col gap-1 rotate-[-2deg] group-hover:rotate-0 transition-transform">
+          <div className="h-1.5 w-10 rounded-full bg-primary/20"/>
           {[70,90,60,80,50,70].map((w,i) => (
             <div key={i} className="h-0.5 rounded-full bg-ink-faint/40" style={{width:`${w}%`}}/>
           ))}
+          <div className="mt-1 grid grid-cols-3 gap-1">
+            {[0,1,2,3,4,5].map(i=><div key={i} className="h-2 rounded bg-blue-100"/>)}
+          </div>
         </div>
 
         {/* Hover */}
@@ -93,7 +97,7 @@ function TemplateCard({ template, onUse, onToggleFav }: {
       </div>
 
       {/* Info */}
-      <div className="p-3.5">
+      <div className="p-4">
         <div className="flex items-start justify-between gap-2 mb-1">
           <h3 className="text-sm font-semibold text-primary leading-snug">{template.name}</h3>
           <Badge variant="secondary" size="xs" className="shrink-0">{PLANNER_TYPE_LABELS[template.type as PlannerType] ?? template.type}</Badge>
@@ -103,7 +107,7 @@ function TemplateCard({ template, onUse, onToggleFav }: {
           <span className="text-[10px] text-ink-faint flex items-center gap-1"><Download size={9}/>{template.downloads.toLocaleString()}</span>
           <div className="flex gap-1 flex-wrap justify-end">
             {template.tags.slice(0,2).map(tag => (
-              <span key={tag} className="text-[9px] bg-surface-sunken text-ink-muted px-1.5 py-0.5 rounded border border-border">{tag}</span>
+              <span key={tag} className="text-[9px] bg-white/80 text-ink-muted px-1.5 py-0.5 rounded border border-white/80 shadow-xs">{tag}</span>
             ))}
           </div>
         </div>
@@ -115,7 +119,7 @@ function TemplateCard({ template, onUse, onToggleFav }: {
 export default function TemplatesPage() {
   const navigate = useNavigate()
   const { getFiltered, searchQuery, setSearchQuery, selectedCategory, setSelectedCategory, toggleFavorite } = useTemplateStore()
-  const { createPlanner } = usePlannerStore()
+  const { importPlanner, setActivePlanner } = usePlannerStore()
   const { toast } = useUIStore()
   const { trackTemplateUsed } = useAnalyticsStore()
   const [favOnly, setFavOnly] = React.useState(false)
@@ -124,7 +128,15 @@ export default function TemplatesPage() {
   if (favOnly) templates = templates.filter(t => t.isFavorite)
 
   const handleUse = (tpl: Template) => {
-    const p = createPlanner(tpl.type, tpl.name)
+    const p = importPlanner({
+      name: tpl.name,
+      description: tpl.description,
+      type: tpl.type,
+      pages: tpl.pages,
+      config: tpl.config,
+      tags: tpl.tags,
+    })
+    setActivePlanner(p.id)
     trackTemplateUsed()
     toast(`Started from "${tpl.name}"`, 'success')
     navigate('/builder')
@@ -142,11 +154,11 @@ export default function TemplatesPage() {
 
       <div className="flex-1 overflow-auto">
         {/* Sticky filters */}
-        <div className="sticky top-0 z-10 bg-paper border-b border-border px-6 py-3 space-y-3">
+        <div className="sticky top-0 z-10 bg-white/80 border-b border-white/70 px-6 py-3 space-y-3 backdrop-blur-xl toolbar-shadow">
           <div className="relative max-w-sm">
             <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-ink-faint pointer-events-none"/>
             <input type="search" placeholder="Search templates…" value={searchQuery} onChange={e=>setSearchQuery(e.target.value)}
-              className="w-full h-8 pl-8 pr-3 text-xs rounded-lg border border-border bg-surface-sunken focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent/50"/>
+              className="w-full h-9 pl-8 pr-3 text-xs rounded-lg border border-white/80 bg-white focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent/50 shadow-xs"/>
           </div>
           <div className="flex flex-wrap gap-1.5">
             {TEMPLATE_CATEGORIES.map(cat => (
@@ -155,7 +167,7 @@ export default function TemplatesPage() {
                   'text-xs font-medium px-3 py-1.5 rounded-full border transition-all',
                   selectedCategory===cat
                     ? 'bg-primary text-white border-primary'
-                    : 'border-border text-ink-muted hover:border-border-strong hover:text-primary bg-paper'
+                    : 'border-white/80 text-ink-muted hover:border-border-strong hover:text-primary bg-white/80 shadow-xs'
                 )}>
                 {cat}
               </button>
@@ -175,7 +187,7 @@ export default function TemplatesPage() {
               }
             />
           ) : (
-            <motion.div layout className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
               <AnimatePresence mode="popLayout">
                 {templates.map(tpl => (
                   <TemplateCard key={tpl.id} template={tpl} onUse={()=>handleUse(tpl)} onToggleFav={()=>toggleFavorite(tpl.id)}/>

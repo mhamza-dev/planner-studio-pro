@@ -15,19 +15,19 @@ interface TopBarProps {
   breadcrumb?: { label: string; href?: string }[]
 }
 export const TopBar: React.FC<TopBarProps> = ({ title, subtitle, actions, className, breadcrumb }) => (
-  <div className={cn('h-14 flex items-center justify-between px-6 border-b border-border bg-paper shrink-0', className)}>
+  <div className={cn('h-16 flex items-center justify-between px-6 border-b border-white/70 bg-white/80 backdrop-blur-xl shrink-0 toolbar-shadow', className)}>
     <div className="min-w-0">
       {breadcrumb && breadcrumb.length > 0 && (
         <div className="flex items-center gap-1 mb-0.5">
           {breadcrumb.map((b, i) => (
             <React.Fragment key={i}>
               {i > 0 && <span className="text-ink-faint text-xs">/</span>}
-              <span className="text-[11px] text-ink-muted">{b.label}</span>
+              <span className="text-[11px] font-medium text-ink-muted">{b.label}</span>
             </React.Fragment>
           ))}
         </div>
       )}
-      <h1 className="text-[15px] font-semibold text-primary truncate">{title}</h1>
+      <h1 className="text-lg font-bold text-primary truncate font-display">{title}</h1>
       {subtitle && <p className="text-xs text-ink-muted mt-0.5 truncate">{subtitle}</p>}
     </div>
     {actions && <div className="flex items-center gap-2 ml-4 shrink-0">{actions}</div>}
@@ -70,7 +70,7 @@ function OnboardingGate() {
 
 // ── AppLayout ─────────────────────────────────────────────────────────────────
 export const AppLayout: React.FC = () => (
-  <div className="flex h-screen overflow-hidden bg-canvas">
+  <div className="flex h-screen overflow-hidden bg-transparent">
     <Sidebar/>
     <main className="flex-1 min-w-0 overflow-auto flex flex-col">
       <Outlet/>

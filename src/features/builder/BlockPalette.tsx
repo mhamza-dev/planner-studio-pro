@@ -6,7 +6,7 @@ import {
   Users, BookOpen, BarChart2, Droplets, Moon, Dumbbell, UtensilsCrossed,
   TrendingUp, PiggyBank, Phone, CreditCard, Receipt, GraduationCap,
   FolderKanban, Minus, Square, Columns2, Star, Hash, ArrowDownUp,
-  StickyNote, ClipboardList, Milestone, Trophy
+  StickyNote, ClipboardList, Milestone, Trophy, Share2, Store, KeyRound, Home, CalendarCheck, Image
 } from 'lucide-react'
 import type { BlockType } from '@/types'
 import { cn } from '@/utils/cn'
@@ -40,6 +40,8 @@ const BLOCK_DEFS: BlockDef[] = [
   { type: 'countdown',        label: 'Countdown',        icon: <Timer size={14}/>,          description: 'Days until a goal date',          category: 'Planning' },
   { type: 'kanban',           label: 'Kanban Board',     icon: <Kanban size={14}/>,         description: 'To Do / In Progress / Done',      category: 'Planning' },
   { type: 'checklist',        label: 'Checklist',        icon: <ClipboardList size={14}/>,  description: 'Categorised checklist',           category: 'Planning' },
+  { type: 'social-calendar',  label: 'Social Calendar',  icon: <Share2 size={14}/>,         description: 'Platform content schedule',       category: 'Planning' },
+  { type: 'etsy-listing',     label: 'Etsy Listing Prep',icon: <Store size={14}/>,          description: 'SEO, files, mockups, launch',     category: 'Planning' },
 
   // Writing
   { type: 'notes',            label: 'Notes',            icon: <FileText size={14}/>,       description: 'Lined note section',              category: 'Writing' },
@@ -59,9 +61,13 @@ const BLOCK_DEFS: BlockDef[] = [
   { type: 'sleep-tracker',    label: 'Sleep Log',        icon: <Moon size={14}/>,           description: 'Sleep time & quality',            category: 'Tracking' },
   { type: 'workout-log',      label: 'Workout Log',      icon: <Dumbbell size={14}/>,       description: 'Sets, reps & weight',             category: 'Tracking' },
   { type: 'meal-planner',     label: 'Meal Planner',     icon: <UtensilsCrossed size={14}/>,description: 'Daily meal sections',             category: 'Tracking' },
+  { type: 'meal-plan-week',   label: 'Weekly Meals',     icon: <CalendarCheck size={14}/>,  description: '7-day meal planning grid',        category: 'Tracking' },
   { type: 'progress-bar',     label: 'Progress Bar',     icon: <TrendingUp size={14}/>,     description: 'Labelled percentage bar',         category: 'Tracking' },
   { type: 'savings-tracker',  label: 'Savings Tracker',  icon: <PiggyBank size={14}/>,      description: 'Goal amount + progress',          category: 'Tracking' },
   { type: 'contact-card',     label: 'Contact Card',     icon: <Phone size={14}/>,          description: 'Name, phone, email rows',         category: 'Tracking' },
+  { type: 'password-log',     label: 'Password Log',     icon: <KeyRound size={14}/>,       description: 'Account details tracker',         category: 'Tracking' },
+  { type: 'cleaning-zone',    label: 'Cleaning Zones',   icon: <Home size={14}/>,           description: 'Room-by-room cleaning tasks',     category: 'Tracking' },
+  { type: 'vision-board',     label: 'Vision Board',     icon: <Image size={14}/>,          description: 'Goal and inspiration placeholders',category: 'Tracking' },
 
   // Finance
   { type: 'budget-row',       label: 'Budget Table',     icon: <CreditCard size={14}/>,     description: 'Income / expense rows',           category: 'Finance' },
@@ -88,9 +94,9 @@ function BlockTile({ def, onAdd }: { def: BlockDef; onAdd: () => void }) {
       onDoubleClick={onAdd}
       title={`${def.description} — drag to canvas or double-click to add`}
       className={cn(
-        'flex items-center gap-2.5 px-2.5 py-2 rounded-lg border border-border bg-paper',
+        'flex items-center gap-2.5 px-2.5 py-2 rounded-lg border border-white/80 bg-white/85 shadow-xs backdrop-blur',
         'cursor-grab active:cursor-grabbing select-none',
-        'hover:border-accent/40 hover:bg-accent/5 hover:shadow-sm transition-all duration-100',
+        'hover:border-accent/40 hover:bg-white hover:shadow-card transition-all duration-100',
         isDragging && 'opacity-30 scale-95',
       )}
     >
@@ -129,13 +135,13 @@ export const BlockPalette: React.FC<BlockPaletteProps> = ({ onAddBlock }) => {
   return (
     <div className="flex flex-col h-full overflow-hidden">
       {/* Search + filter */}
-      <div className="p-2.5 border-b border-border shrink-0 space-y-2">
+      <div className="p-3 border-b border-white/70 shrink-0 space-y-2 bg-white/50">
         <input
           type="search"
           placeholder="Search blocks…"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="w-full h-8 px-2.5 text-xs rounded-lg border border-border bg-surface-sunken focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent/50 placeholder:text-ink-faint"
+          className="w-full h-8 px-2.5 text-xs rounded-lg border border-white/80 bg-white focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent/50 placeholder:text-ink-faint shadow-xs"
         />
         <div className="flex flex-wrap gap-1">
           {CATEGORIES.map(cat => (
@@ -146,7 +152,7 @@ export const BlockPalette: React.FC<BlockPaletteProps> = ({ onAddBlock }) => {
                 'text-[10px] font-medium px-2 py-0.5 rounded-full transition-colors',
                 category === cat
                   ? 'bg-primary text-white'
-                  : 'bg-surface-sunken text-ink-muted hover:text-primary',
+                  : 'bg-white/80 text-ink-muted hover:text-primary hover:bg-white',
               )}
             >
               {cat}

@@ -81,8 +81,8 @@ export default function BuilderPage() {
   if (!planner) {
     return (
       <div className="flex flex-col h-full">
-        <div className="h-14 flex items-center px-6 border-b border-border bg-paper">
-          <h1 className="text-sm font-semibold text-primary">Builder</h1>
+        <div className="h-16 flex items-center px-6 border-b border-white/70 bg-white/80 backdrop-blur-xl toolbar-shadow">
+          <h1 className="text-lg font-bold text-primary font-display">Builder</h1>
         </div>
         <div className="flex-1 flex items-center justify-center">
           <EmptyState
@@ -115,16 +115,19 @@ export default function BuilderPage() {
 
         {/* ── Toolbar ─────────────────────────────────────────────────────── */}
         {!focusMode && (
-          <div className="h-14 flex items-center gap-1.5 px-3 border-b border-border bg-paper shrink-0 toolbar-shadow">
+          <div className="h-16 flex items-center gap-1.5 px-4 border-b border-white/70 bg-white/85 backdrop-blur-xl shrink-0 toolbar-shadow">
             <Tooltip content="Dashboard"><Button variant="ghost" size="icon-sm" onClick={() => navigate('/')}><ChevronLeft size={15}/></Button></Tooltip>
-            <div className="w-px h-5 bg-border mx-1"/>
+            <div className="w-px h-6 bg-border mx-1"/>
 
             {/* Planner name — editable */}
-            <input
-              value={planner.name}
-              onChange={e => usePlannerStore.getState().renamePlanner(planner.id, e.target.value)}
-              className="text-sm font-semibold text-primary bg-transparent border-b border-transparent hover:border-border focus:border-accent focus:outline-none px-1 max-w-[180px] truncate"
-            />
+            <div className="min-w-0">
+              <input
+                value={planner.name}
+                onChange={e => usePlannerStore.getState().renamePlanner(planner.id, e.target.value)}
+                className="text-sm font-bold text-primary bg-transparent border-b border-transparent hover:border-border focus:border-accent focus:outline-none px-1 max-w-[220px] truncate font-display"
+              />
+              <div className="text-[10px] text-ink-faint px-1 capitalize">{planner.type.replace(/-/g, ' ')}</div>
+            </div>
 
             {/* Auto-save indicator */}
             <span className="text-[10px] text-ink-faint ml-1">
@@ -145,7 +148,7 @@ export default function BuilderPage() {
               </Button>
             </Tooltip>
 
-            <div className="w-px h-5 bg-border mx-1"/>
+            <div className="w-px h-6 bg-border mx-1"/>
 
             {/* Zoom */}
             <Tooltip content="Zoom out"><Button variant="ghost" size="icon-sm" onClick={() => setPreviewZoom(previewZoom - 10)} disabled={previewZoom <= 25}><ZoomOut size={14}/></Button></Tooltip>
@@ -153,7 +156,7 @@ export default function BuilderPage() {
             <Tooltip content="Zoom in"><Button variant="ghost" size="icon-sm" onClick={() => setPreviewZoom(previewZoom + 10)} disabled={previewZoom >= 200}><ZoomIn size={14}/></Button></Tooltip>
             <Tooltip content="Reset zoom"><Button variant="ghost" size="icon-sm" onClick={() => setPreviewZoom(100)}><Maximize2 size={13}/></Button></Tooltip>
 
-            <div className="w-px h-5 bg-border mx-1"/>
+            <div className="w-px h-6 bg-border mx-1"/>
 
             {/* Canvas toggles */}
             <Tooltip content="Toggle grid">
@@ -166,8 +169,8 @@ export default function BuilderPage() {
               <Button variant="ghost" size="icon-sm" onClick={() => setShortcutsModalOpen(true)}><Keyboard size={14}/></Button>
             </Tooltip>
 
-            <div className="w-px h-5 bg-border mx-1"/>
-            <Button size="sm" onClick={() => setExportModalOpen(true)}><Download size={14}/> Export</Button>
+            <div className="w-px h-6 bg-border mx-1"/>
+            <Button size="sm" variant="accent" onClick={() => setExportModalOpen(true)}><Download size={14}/> Export</Button>
           </div>
         )}
 
@@ -176,9 +179,9 @@ export default function BuilderPage() {
 
           {/* Left: Blocks + Pages */}
           {!focusMode && (
-            <div className="w-56 shrink-0 border-r border-border bg-paper flex flex-col overflow-hidden">
+            <div className="w-60 shrink-0 border-r border-white/70 bg-white/75 backdrop-blur-xl flex flex-col overflow-hidden shadow-xs">
               <Tabs value={activeTab} onChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
-                <div className="px-2 py-1.5 border-b border-border shrink-0">
+                <div className="px-3 py-2 border-b border-white/70 shrink-0">
                   <TabList variant="segment" className="gap-0.5">
                     <Tab value="blocks" variant="segment"><Blocks size={12}/> Blocks</Tab>
                     <Tab value="pages" variant="segment"><Layers size={12}/> Pages</Tab>
@@ -195,7 +198,7 @@ export default function BuilderPage() {
           )}
 
           {/* Centre: Canvas */}
-          <div className="flex-1 overflow-auto bg-canvas" onClick={e => { if (e.target === e.currentTarget) setSelectedBlock(null) }}>
+          <div className="flex-1 overflow-auto bg-[radial-gradient(circle_at_50%_0%,rgba(37,99,235,.09),transparent_28rem),linear-gradient(180deg,#EEF2F7,#E8EDF5)]" onClick={e => { if (e.target === e.currentTarget) setSelectedBlock(null) }}>
             {page ? (
               <BuilderCanvas
                 page={page} config={planner.config} plannerId={planner.id}
@@ -209,8 +212,8 @@ export default function BuilderPage() {
 
           {/* Right: Block / Planner settings */}
           {!focusMode && (
-            <div className="w-60 shrink-0 border-l border-border bg-paper flex flex-col overflow-hidden">
-              <div className="h-10 flex items-center px-3 border-b border-border shrink-0 justify-between">
+            <div className="w-64 shrink-0 border-l border-white/70 bg-white/75 backdrop-blur-xl flex flex-col overflow-hidden shadow-xs">
+              <div className="h-12 flex items-center px-3 border-b border-white/70 shrink-0 justify-between">
                 <span className="text-xs font-semibold text-primary flex items-center gap-1.5">
                   {selectedBlock ? <><Settings2 size={12}/> Block</> : <><FileSliders size={12}/> Settings</>}
                 </span>
@@ -233,7 +236,7 @@ export default function BuilderPage() {
           {/* Focus mode exit button */}
           {focusMode && (
             <button onClick={toggleFocusMode}
-              className="fixed bottom-4 right-4 z-50 bg-primary text-white text-xs font-medium px-3 py-1.5 rounded-full shadow-float hover:bg-primary-800 transition-colors">
+              className="fixed bottom-4 right-4 z-50 bg-primary text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-float hover:bg-primary-800 transition-colors">
               Exit Focus Mode
             </button>
           )}
