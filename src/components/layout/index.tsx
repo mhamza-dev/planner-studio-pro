@@ -1,10 +1,13 @@
-import React, { Component, type ReactNode } from 'react'
+import React, { Component, type ReactNode, useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
 import { AlertTriangle, RefreshCw } from 'lucide-react'
 import { Sidebar } from './Sidebar'
 import { ToastContainer } from '../ui/index'
 import { Button } from '../ui/Button'
 import { cn } from '@/utils/cn'
+import { CommandPalette } from '@/features/dashboard/CommandPalette'
+import { ShortcutsModal, OnboardingModal } from '@/features/dashboard/Modals'
+import { useUIStore } from '@/store/uiStore'
 
 // ── TopBar ────────────────────────────────────────────────────────────────────
 interface TopBarProps {
@@ -31,6 +34,40 @@ export const TopBar: React.FC<TopBarProps> = ({ title, subtitle, actions, classN
   </div>
 )
 
+// ── Global Handlers ───────────────────────────────────────────────────────────
+function GlobalKeyHandler() {
+  const { setCommandPaletteOpen, setShortcutsModalOpen } = useUIStore()
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
+        setCommandPaletteOpen(true)
+      }
+      if (e.key === '?' && !(e.target as HTMLElement).matches('input,textarea')) {
+        setShortcutsModalOpen(true)
+      }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [setCommandPaletteOpen, setShortcutsModalOpen])
+
+  return null
+}
+
+function OnboardingGate() {
+  const { onboardingCompleted, onboardingOpen, setOnboardingOpen } = useUIStore()
+
+  useEffect(() => {
+    if (!onboardingCompleted) {
+      const t = setTimeout(() => setOnboardingOpen(true), 600)
+      return () => clearTimeout(t)
+    }
+  }, [onboardingCompleted, setOnboardingOpen])
+
+  return <OnboardingModal/>
+}
+
 // ── AppLayout ─────────────────────────────────────────────────────────────────
 export const AppLayout: React.FC = () => (
   <div className="flex h-screen overflow-hidden bg-canvas">
@@ -39,6 +76,10 @@ export const AppLayout: React.FC = () => (
       <Outlet/>
     </main>
     <ToastContainer/>
+    <CommandPalette/>
+    <ShortcutsModal/>
+    <OnboardingGate/>
+    <GlobalKeyHandler/>
   </div>
 )
 
