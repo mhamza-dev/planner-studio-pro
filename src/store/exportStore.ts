@@ -1,39 +1,18 @@
 import { create } from 'zustand'
-import type { ExportConfig, DownloadRecord, ExportFormat } from '@/types'
+import type { ExportConfig, DownloadRecord } from '@/types'
 
 interface ExportState {
   config: ExportConfig
   downloads: DownloadRecord[]
-  isExporting: boolean
-  exportProgress: number
-  exportError: string | null
-
-  setConfig: (config: Partial<ExportConfig>) => void
-  addDownload: (record: DownloadRecord) => void
+  setConfig: (c: Partial<ExportConfig>) => void
+  addDownload: (d: DownloadRecord) => void
   deleteDownload: (id: string) => void
-  setIsExporting: (v: boolean) => void
-  setExportProgress: (v: number) => void
-  setExportError: (e: string | null) => void
 }
 
 export const useExportStore = create<ExportState>()((set) => ({
-  config: {
-    format: 'pdf' as ExportFormat,
-    pageSize: 'A4',
-    quality: 95,
-    includeBleed: false,
-    colorProfile: 'rgb',
-    resolution: 300,
-  },
+  config: { format: 'pdf', pageSize: 'A4', quality: 95, includeBleed: false, colorProfile: 'rgb', resolution: 300, scope: 'all' },
   downloads: [],
-  isExporting: false,
-  exportProgress: 0,
-  exportError: null,
-
-  setConfig: (config) => set(s => ({ config: { ...s.config, ...config } })),
-  addDownload: (record) => set(s => ({ downloads: [record, ...s.downloads] })),
+  setConfig: (c) => set(s => ({ config: { ...s.config, ...c } })),
+  addDownload: (d) => set(s => ({ downloads: [d, ...s.downloads].slice(0, 50) })),
   deleteDownload: (id) => set(s => ({ downloads: s.downloads.filter(d => d.id !== id) })),
-  setIsExporting: (v) => set({ isExporting: v, exportProgress: v ? 0 : 100 }),
-  setExportProgress: (v) => set({ exportProgress: v }),
-  setExportError: (e) => set({ exportError: e }),
 }))

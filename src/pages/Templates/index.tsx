@@ -1,118 +1,184 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, Heart, SlidersHorizontal } from 'lucide-react'
-import { TopBar } from '@/components/layout/TopBar'
-import { Input } from '@/components/ui/Input'
+import { Search, Heart, Sparkles, Download, ArrowRight } from 'lucide-react'
+import { TopBar } from '@/components/layout/index'
 import { Button } from '@/components/ui/Button'
-import { EmptyState } from '@/components/ui/Misc'
-import { TemplateCard } from '@/features/templates/TemplateCard'
+import { Badge } from '@/components/ui/index'
+import { EmptyState } from '@/components/ui/index'
 import { useTemplateStore } from '@/store/templateStore'
 import { usePlannerStore } from '@/store/plannerStore'
+import { useUIStore } from '@/store/uiStore'
+import { useAnalyticsStore } from '@/store/analyticsStore'
 import { TEMPLATE_CATEGORIES } from '@/lib/templates'
-import type { Template } from '@/types'
+import { PLANNER_TYPE_LABELS } from '@/lib/defaults'
+import type { Template, PlannerType } from '@/types'
 import { cn } from '@/utils/cn'
+
+const HUE_BG: Record<string,string> = {
+  tpl_daily_minimal: 'from-slate-50 to-slate-100',
+  tpl_daily_sage: 'from-green-50 to-green-100',
+  tpl_daily_executive: 'from-blue-50 to-blue-100',
+  tpl_daily_rose: 'from-pink-50 to-rose-100',
+  tpl_daily_ink: 'from-zinc-100 to-zinc-200',
+  tpl_weekly_classic: 'from-slate-50 to-blue-50',
+  tpl_weekly_blush: 'from-pink-50 to-rose-50',
+  tpl_weekly_indigo: 'from-indigo-50 to-violet-100',
+  tpl_monthly_classic: 'from-sky-50 to-blue-100',
+  tpl_monthly_gold: 'from-amber-50 to-yellow-100',
+  tpl_habit_grid: 'from-purple-50 to-violet-100',
+  tpl_habit_sage: 'from-green-50 to-teal-100',
+  tpl_budget_master: 'from-green-50 to-emerald-100',
+  tpl_budget_minimalist: 'from-slate-50 to-gray-100',
+  tpl_wellness_daily: 'from-pink-50 to-rose-100',
+  tpl_wellness_teal: 'from-teal-50 to-cyan-100',
+  tpl_fitness_log: 'from-zinc-100 to-stone-200',
+  tpl_fitness_running: 'from-orange-50 to-red-100',
+  tpl_student_success: 'from-orange-50 to-amber-100',
+  tpl_student_exam: 'from-indigo-50 to-purple-100',
+  tpl_student_semester: 'from-teal-50 to-cyan-100',
+  tpl_business_pro: 'from-slate-50 to-gray-100',
+  tpl_business_startup: 'from-violet-50 to-purple-100',
+  tpl_business_freelance: 'from-amber-50 to-yellow-100',
+  tpl_journal_morning: 'from-amber-50 to-orange-100',
+  tpl_journal_gratitude: 'from-pink-50 to-rose-100',
+  tpl_journal_5year: 'from-purple-50 to-indigo-100',
+  tpl_creative_content: 'from-violet-50 to-purple-100',
+  tpl_creative_design: 'from-teal-50 to-cyan-100',
+  tpl_creative_story: 'from-amber-50 to-orange-100',
+  tpl_life_yearreview: 'from-slate-50 to-blue-50',
+  tpl_life_quarter: 'from-green-50 to-emerald-100',
+  tpl_life_travel: 'from-sky-50 to-blue-100',
+}
+
+function TemplateCard({ template, onUse, onToggleFav }: {
+  template: Template; onUse: () => void; onToggleFav: () => void
+}) {
+  const bg = HUE_BG[template.id] ?? 'from-gray-50 to-gray-100'
+
+  return (
+    <motion.div layout initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} exit={{opacity:0,scale:0.97}}
+      className="group bg-paper rounded-xl border border-border shadow-sm overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+      {/* Thumbnail */}
+      <div className={cn('relative h-36 flex items-center justify-center bg-gradient-to-br', bg)}>
+        {/* Paper preview */}
+        <div className="w-14 h-18 bg-white rounded-lg shadow-md border border-white/80 p-1.5 flex flex-col gap-1">
+          <div className="h-1.5 w-8 rounded-full bg-primary/20"/>
+          {[70,90,60,80,50,70].map((w,i) => (
+            <div key={i} className="h-0.5 rounded-full bg-ink-faint/40" style={{width:`${w}%`}}/>
+          ))}
+        </div>
+
+        {/* Hover */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-primary/10 backdrop-blur-[2px]">
+          <Button size="sm" onClick={onUse} className="shadow-float">Use Template</Button>
+        </div>
+
+        {/* Badges */}
+        {template.isPremium && (
+          <div className="absolute top-2 left-2">
+            <Badge variant="premium" size="xs"><Sparkles size={9}/> Pro</Badge>
+          </div>
+        )}
+
+        {/* Favorite */}
+        <button onClick={e=>{e.stopPropagation();onToggleFav()}}
+          className={cn(
+            'absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center transition-all shadow-xs',
+            'opacity-0 group-hover:opacity-100',
+            template.isFavorite ? 'bg-red-500 text-white opacity-100' : 'bg-paper/90 text-ink-muted hover:text-red-500'
+          )}>
+          <Heart size={12} fill={template.isFavorite ? 'currentColor' : 'none'}/>
+        </button>
+      </div>
+
+      {/* Info */}
+      <div className="p-3.5">
+        <div className="flex items-start justify-between gap-2 mb-1">
+          <h3 className="text-sm font-semibold text-primary leading-snug">{template.name}</h3>
+          <Badge variant="secondary" size="xs" className="shrink-0">{PLANNER_TYPE_LABELS[template.type as PlannerType] ?? template.type}</Badge>
+        </div>
+        <p className="text-xs text-ink-muted leading-relaxed line-clamp-2 mb-2.5">{template.description}</p>
+        <div className="flex items-center justify-between">
+          <span className="text-[10px] text-ink-faint flex items-center gap-1"><Download size={9}/>{template.downloads.toLocaleString()}</span>
+          <div className="flex gap-1 flex-wrap justify-end">
+            {template.tags.slice(0,2).map(tag => (
+              <span key={tag} className="text-[9px] bg-surface-sunken text-ink-muted px-1.5 py-0.5 rounded border border-border">{tag}</span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  )
+}
 
 export default function TemplatesPage() {
   const navigate = useNavigate()
-  const { getFilteredTemplates, searchQuery, setSearchQuery, selectedCategory, setSelectedCategory, toggleFavorite } = useTemplateStore()
-  const { createPlanner, setActivePlanner } = usePlannerStore()
-  const [showFavOnly, setShowFavOnly] = React.useState(false)
+  const { getFiltered, searchQuery, setSearchQuery, selectedCategory, setSelectedCategory, toggleFavorite } = useTemplateStore()
+  const { createPlanner } = usePlannerStore()
+  const { setActivePlanner, toast } = useUIStore()
+  const { trackTemplateUsed } = useAnalyticsStore()
+  const [favOnly, setFavOnly] = React.useState(false)
 
-  let templates = getFilteredTemplates()
-  if (showFavOnly) templates = templates.filter(t => t.isFavorite)
+  let templates = getFiltered()
+  if (favOnly) templates = templates.filter(t => t.isFavorite)
 
-  const handleUseTemplate = (template: Template) => {
-    const planner = createPlanner(template.type, template.name)
+  const handleUse = (tpl: Template) => {
+    const p = createPlanner(tpl.type, tpl.name)
+    trackTemplateUsed()
+    toast(`Started from "${tpl.name}"`, 'success')
     navigate('/builder')
   }
 
   return (
-    <div className="flex flex-col h-full">
-      <TopBar
-        title="Templates"
-        subtitle={`${templates.length} ready-to-use planner layouts`}
+    <div className="flex flex-col h-full overflow-hidden">
+      <TopBar title="Templates" subtitle={`${templates.length} planner layouts ready to use`}
         actions={
-          <Button
-            variant={showFavOnly ? 'secondary' : 'outline'}
-            size="sm"
-            onClick={() => setShowFavOnly(!showFavOnly)}
-          >
-            <Heart size={14} fill={showFavOnly ? 'currentColor' : 'none'} />
-            Favorites
+          <Button variant={favOnly ? 'secondary' : 'outline'} size="sm" onClick={()=>setFavOnly(!favOnly)}>
+            <Heart size={13} fill={favOnly?'currentColor':'none'}/> Favorites
           </Button>
         }
       />
 
       <div className="flex-1 overflow-auto">
-        {/* Filters */}
-        <div className="sticky top-0 z-10 bg-paper border-b border-border px-6 py-3">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="relative flex-1 max-w-sm">
-              <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary pointer-events-none" />
-              <input
-                type="search"
-                placeholder="Search templates..."
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                className="w-full h-9 pl-9 pr-3 text-sm rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40"
-              />
-            </div>
+        {/* Sticky filters */}
+        <div className="sticky top-0 z-10 bg-paper border-b border-border px-6 py-3 space-y-3">
+          <div className="relative max-w-sm">
+            <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-ink-faint pointer-events-none"/>
+            <input type="search" placeholder="Search templates…" value={searchQuery} onChange={e=>setSearchQuery(e.target.value)}
+              className="w-full h-8 pl-8 pr-3 text-xs rounded-lg border border-border bg-surface-sunken focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent/50"/>
           </div>
-          <div className="flex items-center gap-1.5 flex-wrap">
+          <div className="flex flex-wrap gap-1.5">
             {TEMPLATE_CATEGORIES.map(cat => (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
+              <button key={cat} onClick={()=>setSelectedCategory(cat)}
                 className={cn(
-                  'text-xs font-medium px-3 py-1.5 rounded-full border transition-all duration-150',
-                  selectedCategory === cat
+                  'text-xs font-medium px-3 py-1.5 rounded-full border transition-all',
+                  selectedCategory===cat
                     ? 'bg-primary text-white border-primary'
-                    : 'border-border text-secondary hover:border-accent-dark hover:text-primary bg-paper'
-                )}
-              >
+                    : 'border-border text-ink-muted hover:border-border-strong hover:text-primary bg-paper'
+                )}>
                 {cat}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Grid */}
         <div className="p-6">
           {templates.length === 0 ? (
-            <EmptyState
-              icon={<Search size={28} />}
-              title={showFavOnly ? 'No favorites yet' : 'No templates match your search'}
-              description={
-                showFavOnly
-                  ? 'Heart any template to save it here for quick access.'
-                  : 'Try a different search term or category.'
-              }
+            <EmptyState icon={<Search size={28}/>}
+              title={favOnly ? 'No favorites yet' : 'No templates match your search'}
+              description={favOnly ? 'Heart any template to save it here.' : 'Try a different term or category.'}
               action={
-                showFavOnly ? (
-                  <Button variant="outline" size="sm" onClick={() => setShowFavOnly(false)}>
-                    Browse all templates
-                  </Button>
-                ) : (
-                  <Button variant="outline" size="sm" onClick={() => { setSearchQuery(''); setSelectedCategory('All') }}>
-                    Clear filters
-                  </Button>
-                )
+                <Button variant="outline" size="sm" onClick={()=>{setSearchQuery('');setSelectedCategory('All');setFavOnly(false)}}>
+                  Clear filters
+                </Button>
               }
             />
           ) : (
-            <motion.div
-              layout
-              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
-            >
+            <motion.div layout className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
               <AnimatePresence mode="popLayout">
-                {templates.map(template => (
-                  <TemplateCard
-                    key={template.id}
-                    template={template}
-                    onUse={handleUseTemplate}
-                    onToggleFavorite={toggleFavorite}
-                  />
+                {templates.map(tpl => (
+                  <TemplateCard key={tpl.id} template={tpl} onUse={()=>handleUse(tpl)} onToggleFav={()=>toggleFavorite(tpl.id)}/>
                 ))}
               </AnimatePresence>
             </motion.div>

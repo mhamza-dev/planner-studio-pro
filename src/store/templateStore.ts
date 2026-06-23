@@ -8,11 +8,10 @@ interface TemplateState {
   favorites: string[]
   searchQuery: string
   selectedCategory: string
-
   toggleFavorite: (id: string) => void
   setSearchQuery: (q: string) => void
   setSelectedCategory: (cat: string) => void
-  getFilteredTemplates: () => Template[]
+  getFiltered: () => Template[]
 }
 
 export const useTemplateStore = create<TemplateState>()(
@@ -22,40 +21,31 @@ export const useTemplateStore = create<TemplateState>()(
       favorites: [],
       searchQuery: '',
       selectedCategory: 'All',
-
       toggleFavorite: (id) => {
-        set(state => {
-          const favorites = state.favorites.includes(id)
-            ? state.favorites.filter(f => f !== id)
-            : [...state.favorites, id]
+        set(s => {
+          const favs = s.favorites.includes(id)
+            ? s.favorites.filter(f => f !== id)
+            : [...s.favorites, id]
           return {
-            favorites,
-            templates: state.templates.map(t => ({
-              ...t,
-              isFavorite: favorites.includes(t.id),
-            })),
+            favorites: favs,
+            templates: s.templates.map(t => ({ ...t, isFavorite: favs.includes(t.id) })),
           }
         })
       },
-
       setSearchQuery: (q) => set({ searchQuery: q }),
       setSelectedCategory: (cat) => set({ selectedCategory: cat }),
-
-      getFilteredTemplates: () => {
+      getFiltered: () => {
         const { templates, searchQuery, selectedCategory } = get()
         return templates.filter(t => {
-          const matchesCategory = selectedCategory === 'All' || t.category === selectedCategory
-          const matchesSearch = !searchQuery ||
-            t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            t.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            t.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-          return matchesCategory && matchesSearch
+          const matchCat = selectedCategory === 'All' || t.category === selectedCategory
+          const q = searchQuery.toLowerCase()
+          const matchSearch = !q || t.name.toLowerCase().includes(q) ||
+            t.description.toLowerCase().includes(q) ||
+            t.tags.some(tag => tag.toLowerCase().includes(q))
+          return matchCat && matchSearch
         })
       },
     }),
-    {
-      name: 'template-store',
-      partialize: (state) => ({ favorites: state.favorites }),
-    }
+    { name: 'psp-templates-v2', partialize: s => ({ favorites: s.favorites }) }
   )
 )
