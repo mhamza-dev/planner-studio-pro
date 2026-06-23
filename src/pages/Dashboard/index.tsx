@@ -58,11 +58,11 @@ function PlannerCard({ planner, onOpen, onDuplicate, onDelete, onRename }:{
 
   return (
     <motion.div layout initial={{ opacity:0, y:8 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0, scale:0.97 }}
-      className="group bg-paper rounded-xl border border-border shadow-sm overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
+      className="relative group bg-paper rounded-xl border border-border shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
       onClick={onOpen}
     >
       {/* Thumbnail */}
-      <div className="h-32 relative overflow-hidden flex items-center justify-center"
+      <div className="h-32 relative rounded-t-xl overflow-hidden flex items-center justify-center"
         style={{ background: `linear-gradient(135deg, ${color}12, ${color}22)` }}>
         {/* Mini paper preview */}
         <div className="w-16 h-20 bg-white rounded-lg shadow-md border border-white/80 p-2 flex flex-col gap-1">
@@ -91,24 +91,24 @@ function PlannerCard({ planner, onOpen, onDuplicate, onDelete, onRename }:{
             {planner.status}
           </Badge>
         </div>
+      </div>
 
-        {/* Options menu */}
-        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity" onClick={e => e.stopPropagation()}>
-          <Dropdown align="right"
-            trigger={
-              <button className="w-7 h-7 flex items-center justify-center rounded-lg bg-white/90 shadow-sm hover:bg-white transition-colors">
-                <MoreHorizontal size={13} className="text-primary"/>
-              </button>
-            }
-            items={[
-              { label:'Open Builder', icon:<PenTool size={13}/>, onClick:onOpen },
-              { label:'Rename', icon:<Edit3 size={13}/>, onClick:()=>setRenaming(true) },
-              { label:'Duplicate', icon:<Copy size={13}/>, onClick:onDuplicate },
-              { separator:true },
-              { label:'Delete', icon:<Trash2 size={13}/>, onClick:onDelete, danger:true },
-            ]}
-          />
-        </div>
+      {/* Options menu */}
+      <div className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity" onClick={e => e.stopPropagation()}>
+        <Dropdown align="right"
+          trigger={
+            <button className="w-7 h-7 flex items-center justify-center rounded-lg bg-white/90 shadow-sm hover:bg-white transition-colors">
+              <MoreHorizontal size={13} className="text-primary"/>
+            </button>
+          }
+          items={[
+            { label:'Open Builder', icon:<PenTool size={13}/>, onClick:onOpen },
+            { label:'Rename', icon:<Edit3 size={13}/>, onClick:()=>setRenaming(true) },
+            { label:'Duplicate', icon:<Copy size={13}/>, onClick:onDuplicate },
+            { separator:true },
+            { label:'Delete', icon:<Trash2 size={13}/>, onClick:onDelete, danger:true },
+          ]}
+        />
       </div>
 
       {/* Info */}
