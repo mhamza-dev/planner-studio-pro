@@ -5,7 +5,7 @@ import {
 import { Button } from '@/components/ui/Button'
 import { ColorPicker } from '@/components/ui/ColorPicker'
 import { Toggle } from '@/components/ui/Controls'
-import { Spinner, Select } from '@/components/ui/Input'
+import { CustomSelect, Spinner } from '@/components/ui/Input'
 import { Divider } from '@/components/ui/index'
 import { usePlannerStore } from '@/store/plannerStore'
 import { MOTIVATIONAL_QUOTES } from '@/lib/defaults'
@@ -33,10 +33,13 @@ function InlineSel({ label, value, onChange, options }: {
   return (
     <Row>
       <Label>{label}</Label>
-      <select value={value} onChange={e => onChange(e.target.value)}
-        className="h-7 px-2 text-xs rounded-lg border border-border bg-surface-sunken text-primary focus:outline-none focus:ring-1 focus:ring-accent/30 cursor-pointer max-w-[120px]">
-        {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-      </select>
+      <CustomSelect
+        value={value}
+        onChange={onChange}
+        options={options}
+        className="w-[126px] shrink-0"
+        buttonClassName="h-7 px-2 text-xs"
+      />
     </Row>
   )
 }
@@ -167,9 +170,34 @@ export const BlockProperties: React.FC<BlockPropertiesProps> = ({ block, planner
           <Spinner label="Items per column" value={cfg('itemsPerColumn',3)} onChange={v=>set('itemsPerColumn',v)} min={1} max={8}/>
         </Section>
       )
+      case 'social-calendar': return (
+        <Section title="Social Calendar">
+          <Spinner label="Rows" value={cfg('rows',7)} onChange={v=>set('rows',v)} min={3} max={20}/>
+        </Section>
+      )
+      case 'etsy-listing': return (
+        <Section title="Etsy Listing">
+          <Spinner label="Planning rows" value={cfg('rows',6)} onChange={v=>set('rows',v)} min={3} max={6}/>
+        </Section>
+      )
       case 'checklist': return (
         <Section title="Checklist">
           <Spinner label="Items per category" value={cfg('itemsPerCategory',4)} onChange={v=>set('itemsPerCategory',v)} min={1} max={10}/>
+        </Section>
+      )
+      case 'password-log': return (
+        <Section title="Password Log">
+          <Spinner label="Rows" value={cfg('rows',8)} onChange={v=>set('rows',v)} min={3} max={20}/>
+        </Section>
+      )
+      case 'cleaning-zone': return (
+        <Section title="Cleaning Zones">
+          <Spinner label="Tasks per room" value={cfg('itemsPerRoom',4)} onChange={v=>set('itemsPerRoom',v)} min={2} max={8}/>
+        </Section>
+      )
+      case 'vision-board': return (
+        <Section title="Vision Board">
+          <Spinner label="Image slots" value={cfg('slots',6)} onChange={v=>set('slots',v)} min={3} max={12}/>
         </Section>
       )
       case 'countdown': return (
@@ -313,6 +341,8 @@ export const BlockProperties: React.FC<BlockPropertiesProps> = ({ block, planner
         {/* Style */}
         <Section title="Style">
           <ColorPicker label="Background" value={block.style.backgroundColor||'transparent'} onChange={v=>sty('backgroundColor',v)}/>
+          <ColorPicker label="Text color" value={block.style.textColor || '#0F172A'} onChange={v=>sty('textColor',v)}/>
+          <ColorPicker label="Accent color" value={block.style.accentColor || '#E2E8F0'} onChange={v=>sty('accentColor',v)}/>
           <ColorPicker label="Border color" value={block.style.borderColor} onChange={v=>sty('borderColor',v)}/>
           <Spinner label="Border width" value={block.style.borderWidth} onChange={v=>sty('borderWidth',v)} min={0} max={4} suffix="px"/>
           <Spinner label="Border radius" value={block.style.borderRadius} onChange={v=>sty('borderRadius',v)} min={0} max={24} suffix="px"/>

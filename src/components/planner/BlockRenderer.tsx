@@ -116,8 +116,8 @@ const TodoListBlock: React.FC<BlockProps> = ({ block, config }) => {
   return (
     <div className="space-y-1.5">
       {Array.from({length:count}).map((_,i)=>(
-        <div key={i} className="flex items-center gap-2">
-          <div className="w-3.5 h-3.5 rounded border shrink-0" style={{borderColor:`${config.primaryColor}50`}}/>
+        <div key={i} className="flex items-center gap-2 rounded-md px-1 py-0.5" style={{backgroundColor: i % 2 === 0 ? `${config.accentColor}10` : undefined}}>
+          <div className="w-3.5 h-3.5 rounded border-2 shrink-0" style={{borderColor:`${config.primaryColor}45`,backgroundColor:'#fff'}}/>
           <div className="flex-1 border-b h-4" style={C.line(config.primaryColor,0.12)}/>
         </div>
       ))}
@@ -130,8 +130,8 @@ const GoalSectionBlock: React.FC<BlockProps> = ({ block, config }) => {
   return (
     <div className="space-y-2">
       {Array.from({length:count}).map((_,i)=>(
-        <div key={i} className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded shrink-0 flex items-center justify-center text-[8px] font-bold"
+        <div key={i} className="flex items-center gap-2 rounded-lg px-1.5 py-1" style={{backgroundColor: i % 2 === 0 ? `${config.accentColor}14` : undefined}}>
+          <div className="w-5 h-5 rounded-lg shrink-0 flex items-center justify-center text-[8px] font-bold shadow-sm"
             style={{backgroundColor:`${config.accentColor}60`,color:config.primaryColor}}>{i+1}</div>
           <div className="flex-1 border-b h-4" style={C.line(config.primaryColor,0.15)}/>
         </div>
@@ -148,12 +148,14 @@ const PriorityMatrixBlock: React.FC<BlockProps> = ({ block, config }) => {
     { label:'Eliminate', sub:'Not Urgent + Not Important', weight:0.25 },
   ]
   return (
-    <div className="grid grid-cols-2 gap-1.5" style={{height:'110px'}}>
+    <div className="grid grid-cols-2 gap-1.5 min-h-[120px]">
       {quads.map(q=>(
-        <div key={q.label} className="rounded-lg p-2 flex flex-col" style={{backgroundColor:`${config.accentColor}30`,border:`1px solid ${config.accentColor}`}}>
-          <div className="text-[8px] font-bold uppercase tracking-wide" style={{color:`${config.primaryColor}${Math.round(q.weight*255).toString(16).padStart(2,'0')}`}}>{q.label}</div>
-          <div className="text-[7px] opacity-60" style={{color:config.primaryColor}}>{q.sub}</div>
-          {Array.from({length:3}).map((_,i)=><div key={i} className="mt-auto border-b h-3" style={C.line(config.primaryColor,0.15)}/>)}
+        <div key={q.label} className="min-w-0 overflow-hidden rounded-lg p-2 flex flex-col" style={{backgroundColor:`${config.accentColor}30`,border:`1px solid ${config.accentColor}`}}>
+          <div className="truncate text-[8px] font-bold uppercase tracking-wide" style={{color:`${config.primaryColor}${Math.round(q.weight*255).toString(16).padStart(2,'0')}`}}>{q.label}</div>
+          <div className="truncate text-[7px] opacity-60" style={{color:config.primaryColor}}>{q.sub}</div>
+          <div className="mt-1 space-y-1 overflow-hidden">
+            {Array.from({length:3}).map((_,i)=><div key={i} className="border-b h-3" style={C.line(config.primaryColor,0.15)}/>)}
+          </div>
         </div>
       ))}
     </div>
@@ -250,6 +252,38 @@ const ChecklistBlock: React.FC<BlockProps> = ({ block, config }) => {
               <div className="flex-1 border-b h-3.5" style={C.line(config.primaryColor,0.12)}/>
             </div>
           ))}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+const SocialCalendarBlock: React.FC<BlockProps> = ({ block, config }) => {
+  const rows = (block.config.rows as number) || 7
+  return (
+    <div>
+      <div className="grid grid-cols-5 gap-1.5 mb-1">
+        {['Date','Platform','Topic','Asset','Status'].map(h=>(
+          <div key={h} className="text-[7px] font-bold uppercase tracking-wide truncate" style={{color:`${config.primaryColor}70`}}>{h}</div>
+        ))}
+      </div>
+      {Array.from({length:rows}).map((_,i)=>(
+        <div key={i} className="grid grid-cols-5 gap-1.5 mb-1.5">
+          {[0,1,2,3,4].map(c=><div key={c} className="border-b h-4" style={C.line(config.primaryColor,0.12)}/>)}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+const EtsyListingBlock: React.FC<BlockProps> = ({ block, config }) => {
+  const rows = (block.config.rows as number) || 6
+  return (
+    <div className="space-y-2">
+      {['Title keywords','Tags','Mockups','Files included','Price','Launch checklist'].slice(0, rows).map(label=>(
+        <div key={label} className="flex items-center gap-2">
+          <span className="w-20 shrink-0 truncate text-[8px] font-bold uppercase tracking-wide" style={{color:`${config.primaryColor}70`}}>{label}</span>
+          <div className="flex-1 border-b h-4" style={C.line(config.primaryColor,0.12)}/>
         </div>
       ))}
     </div>
@@ -496,19 +530,20 @@ const ProgressBarBlock: React.FC<BlockProps> = ({ block, config }) => {
 
 const SavingsTrackerBlock: React.FC<BlockProps> = ({ block, config }) => {
   const { goal=1000, current=0, currency='$' } = block.config as Record<string,unknown>
+  const currencySymbol = String(currency)
   const pct = Math.min(100,((current as number)/(goal as number))*100)
   return (
     <div>
       <div className="flex items-center justify-between mb-1">
         <span className="text-[9px] font-medium" style={{color:config.primaryColor}}>Savings Goal</span>
-        <span className="text-[9px] font-bold" style={{color:config.secondaryColor}}>{currency}{(current as number).toLocaleString()} / {currency}{(goal as number).toLocaleString()}</span>
+        <span className="text-[9px] font-bold" style={{color:config.secondaryColor}}>{currencySymbol}{(current as number).toLocaleString()} / {currencySymbol}{(goal as number).toLocaleString()}</span>
       </div>
       <div className="h-3 rounded-full overflow-hidden" style={{backgroundColor:`${config.accentColor}40`}}>
         <div className="h-full rounded-full" style={{width:`${pct}%`,backgroundColor:config.primaryColor}}/>
       </div>
       <div className="flex justify-between mt-1">
         {Array.from({length:5}).map((_,i)=>(
-          <div key={i} className="text-[7px]" style={{color:`${config.primaryColor}50`}}>{Math.round((i/4)*(goal as number)/(1000))>0?`${currency}${Math.round((i/4)*(goal as number)/1000)}k`:currency+'0'}</div>
+          <div key={i} className="text-[7px]" style={{color:`${config.primaryColor}50`}}>{Math.round((i/4)*(goal as number)/(1000))>0?`${currencySymbol}${Math.round((i/4)*(goal as number)/1000)}k`:currencySymbol+'0'}</div>
         ))}
       </div>
     </div>
@@ -523,6 +558,76 @@ const ContactCardBlock: React.FC<BlockProps> = ({ block, config }) => {
         <div key={f} className="flex items-center gap-2">
           <span className="text-[8px] font-bold w-12 shrink-0 uppercase tracking-wide" style={{color:`${config.primaryColor}60`}}>{f}</span>
           <div className="flex-1 border-b h-4" style={C.line(config.primaryColor,0.15)}/>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+const PasswordLogBlock: React.FC<BlockProps> = ({ block, config }) => {
+  const rows = (block.config.rows as number) || 8
+  return (
+    <div>
+      <div className="grid grid-cols-4 gap-2 mb-1">
+        {['Site','Username','Password','Notes'].map(h=>(
+          <div key={h} className="text-[7px] font-bold uppercase tracking-wide" style={{color:`${config.primaryColor}70`}}>{h}</div>
+        ))}
+      </div>
+      {Array.from({length:rows}).map((_,i)=>(
+        <div key={i} className="grid grid-cols-4 gap-2 mb-1.5">
+          {[0,1,2,3].map(c=><div key={c} className="border-b h-4" style={C.line(config.primaryColor,0.12)}/>)}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+const CleaningZoneBlock: React.FC<BlockProps> = ({ block, config }) => {
+  const rooms = (block.config.rooms as string[]) || ['Kitchen', 'Bath', 'Bedroom', 'Living']
+  const items = (block.config.itemsPerRoom as number) || 4
+  return (
+    <div className="grid grid-cols-2 gap-2">
+      {rooms.map(room=>(
+        <div key={room} className="min-w-0 rounded-lg p-2" style={{backgroundColor:`${config.accentColor}20`,border:`1px solid ${config.accentColor}`}}>
+          <div className="truncate text-[8px] font-bold uppercase tracking-wider mb-1.5" style={{color:config.secondaryColor}}>{room}</div>
+          {Array.from({length:items}).map((_,i)=>(
+            <div key={i} className="flex items-center gap-1.5 mb-1">
+              <div className="h-2.5 w-2.5 shrink-0 rounded border" style={{borderColor:`${config.primaryColor}40`}}/>
+              <div className="flex-1 border-b h-3" style={C.line(config.primaryColor,0.12)}/>
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+const MealPlanWeekBlock: React.FC<BlockProps> = ({ block, config }) => {
+  const meals = (block.config.meals as string[]) || ['Breakfast', 'Lunch', 'Dinner', 'Snack']
+  return (
+    <div className="overflow-hidden">
+      <div className="grid gap-1" style={{gridTemplateColumns:`58px repeat(7,minmax(0,1fr))`}}>
+        <div/>
+        {['M','T','W','T','F','S','S'].map((d,i)=><div key={`${d}${i}`} className="text-center text-[7px] font-bold" style={{color:`${config.primaryColor}70`}}>{d}</div>)}
+        {meals.map(meal=>(
+          <React.Fragment key={meal}>
+            <div className="truncate text-[7px] font-bold uppercase tracking-wide" style={{color:config.secondaryColor}}>{meal}</div>
+            {Array.from({length:7}).map((_,i)=><div key={i} className="h-5 rounded border" style={{borderColor:`${config.accentColor}`,backgroundColor:`${config.accentColor}18`}}/>)}
+          </React.Fragment>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+const VisionBoardBlock: React.FC<BlockProps> = ({ block, config }) => {
+  const slots = (block.config.slots as number) || 6
+  return (
+    <div className="grid grid-cols-3 gap-2">
+      {Array.from({length:slots}).map((_,i)=>(
+        <div key={i} className="aspect-[4/3] rounded-lg border border-dashed flex items-center justify-center text-[8px] font-medium"
+          style={{borderColor:`${config.primaryColor}25`,backgroundColor:`${config.accentColor}18`,color:`${config.primaryColor}45`}}>
+          idea {i+1}
         </div>
       ))}
     </div>
@@ -596,7 +701,7 @@ const ProjectTrackerBlock: React.FC<BlockProps> = ({ block, config }) => {
   return (
     <div className="space-y-2">
       {Array.from({length:count}).map((_,i)=>(
-        <div key={i} className="rounded-lg p-2" style={{backgroundColor:`${config.accentColor}20`,border:`1px solid ${config.accentColor}`}}>
+        <div key={i} className="rounded-lg p-2 shadow-sm" style={{backgroundColor:`${config.accentColor}20`,border:`1px solid ${config.accentColor}`}}>
           <div className="flex items-center gap-2 mb-1.5">
             <div className="flex-1 border-b h-3.5" style={C.line(config.primaryColor,0.2)}/>
             <span className="text-[8px] text-ink-muted shrink-0">0%</span>
@@ -617,48 +722,59 @@ export const PlannerBlockRenderer: React.FC<BlockProps> = ({ block, config }) =>
   if (block.hidden) return null
   const inlineTypes = ['header','date-header','divider','spacer','cover-title']
   const isInline = inlineTypes.includes(block.type)
+  const localConfig = {
+    ...config,
+    primaryColor: block.style.textColor || config.primaryColor,
+    accentColor: block.style.accentColor || config.accentColor,
+  }
 
   const renderContent = () => {
     switch(block.type) {
-      case 'date-header': return <DateHeaderBlock block={block} config={config}/>
-      case 'header': return <SectionHeaderBlock block={block} config={config}/>
-      case 'divider': return <DividerBlock block={block} config={config}/>
+      case 'date-header': return <DateHeaderBlock block={block} config={localConfig}/>
+      case 'header': return <SectionHeaderBlock block={block} config={localConfig}/>
+      case 'divider': return <DividerBlock block={block} config={localConfig}/>
       case 'spacer': return <SpacerBlock/>
-      case 'cover-title': return <CoverTitleBlock block={block} config={config}/>
-      case 'two-column': return <TwoColumnBlock block={block} config={config}/>
-      case 'table-of-contents': return <TableOfContentsBlock block={block} config={config}/>
-      case 'time-slots': return <TimeSlotsBlock block={block} config={config}/>
-      case 'todo-list': return <TodoListBlock block={block} config={config}/>
-      case 'goal-section': return <GoalSectionBlock block={block} config={config}/>
-      case 'priority-matrix': return <PriorityMatrixBlock block={block} config={config}/>
-      case 'week-grid': return <WeekGridBlock block={block} config={config}/>
-      case 'month-calendar': return <MonthCalendarBlock block={block} config={config}/>
-      case 'countdown': return <CountdownBlock block={block} config={config}/>
-      case 'kanban': return <KanbanBlock block={block} config={config}/>
-      case 'checklist': return <ChecklistBlock block={block} config={config}/>
-      case 'notes': return <NotesBlock block={block} config={config}/>
-      case 'reflection': return <ReflectionBlock block={block} config={config}/>
-      case 'gratitude': return <GratitudeBlock block={block} config={config}/>
-      case 'custom-text': return <CustomTextBlock block={block} config={config}/>
-      case 'quote-block': return <QuoteBlock block={block} config={config}/>
-      case 'brain-dump': return <BrainDumpBlock block={block} config={config}/>
-      case 'focus-block': return <FocusBlock block={block} config={config}/>
-      case 'meeting-notes': return <MeetingNotesBlock block={block} config={config}/>
-      case 'reading-log': return <ReadingLogBlock block={block} config={config}/>
-      case 'habit-grid': return <HabitGridBlock block={block} config={config}/>
-      case 'mood-tracker': return <MoodTrackerBlock block={block} config={config}/>
-      case 'water-tracker': return <WaterTrackerBlock block={block} config={config}/>
-      case 'sleep-tracker': return <SleepTrackerBlock block={block} config={config}/>
-      case 'workout-log': return <WorkoutLogBlock block={block} config={config}/>
-      case 'meal-planner': return <MealPlannerBlock block={block} config={config}/>
-      case 'progress-bar': return <ProgressBarBlock block={block} config={config}/>
-      case 'savings-tracker': return <SavingsTrackerBlock block={block} config={config}/>
-      case 'contact-card': return <ContactCardBlock block={block} config={config}/>
-      case 'budget-row': return <BudgetRowBlock block={block} config={config}/>
-      case 'expense-tracker': return <ExpenseTrackerBlock block={block} config={config}/>
-      case 'class-schedule': return <ClassScheduleBlock block={block} config={config}/>
-      case 'project-tracker': return <ProjectTrackerBlock block={block} config={config}/>
-      default: return <div className="h-4 border border-dashed rounded text-[8px] flex items-center justify-center text-ink-faint" style={{borderColor:`${config.primaryColor}30`}}>{block.type}</div>
+      case 'cover-title': return <CoverTitleBlock block={block} config={localConfig}/>
+      case 'two-column': return <TwoColumnBlock block={block} config={localConfig}/>
+      case 'table-of-contents': return <TableOfContentsBlock block={block} config={localConfig}/>
+      case 'time-slots': return <TimeSlotsBlock block={block} config={localConfig}/>
+      case 'todo-list': return <TodoListBlock block={block} config={localConfig}/>
+      case 'goal-section': return <GoalSectionBlock block={block} config={localConfig}/>
+      case 'priority-matrix': return <PriorityMatrixBlock block={block} config={localConfig}/>
+      case 'week-grid': return <WeekGridBlock block={block} config={localConfig}/>
+      case 'month-calendar': return <MonthCalendarBlock block={block} config={localConfig}/>
+      case 'countdown': return <CountdownBlock block={block} config={localConfig}/>
+      case 'kanban': return <KanbanBlock block={block} config={localConfig}/>
+      case 'checklist': return <ChecklistBlock block={block} config={localConfig}/>
+      case 'social-calendar': return <SocialCalendarBlock block={block} config={localConfig}/>
+      case 'etsy-listing': return <EtsyListingBlock block={block} config={localConfig}/>
+      case 'notes': return <NotesBlock block={block} config={localConfig}/>
+      case 'reflection': return <ReflectionBlock block={block} config={localConfig}/>
+      case 'gratitude': return <GratitudeBlock block={block} config={localConfig}/>
+      case 'custom-text': return <CustomTextBlock block={block} config={localConfig}/>
+      case 'quote-block': return <QuoteBlock block={block} config={localConfig}/>
+      case 'brain-dump': return <BrainDumpBlock block={block} config={localConfig}/>
+      case 'focus-block': return <FocusBlock block={block} config={localConfig}/>
+      case 'meeting-notes': return <MeetingNotesBlock block={block} config={localConfig}/>
+      case 'reading-log': return <ReadingLogBlock block={block} config={localConfig}/>
+      case 'habit-grid': return <HabitGridBlock block={block} config={localConfig}/>
+      case 'mood-tracker': return <MoodTrackerBlock block={block} config={localConfig}/>
+      case 'water-tracker': return <WaterTrackerBlock block={block} config={localConfig}/>
+      case 'sleep-tracker': return <SleepTrackerBlock block={block} config={localConfig}/>
+      case 'workout-log': return <WorkoutLogBlock block={block} config={localConfig}/>
+      case 'meal-planner': return <MealPlannerBlock block={block} config={localConfig}/>
+      case 'meal-plan-week': return <MealPlanWeekBlock block={block} config={localConfig}/>
+      case 'progress-bar': return <ProgressBarBlock block={block} config={localConfig}/>
+      case 'savings-tracker': return <SavingsTrackerBlock block={block} config={localConfig}/>
+      case 'contact-card': return <ContactCardBlock block={block} config={localConfig}/>
+      case 'password-log': return <PasswordLogBlock block={block} config={localConfig}/>
+      case 'cleaning-zone': return <CleaningZoneBlock block={block} config={localConfig}/>
+      case 'vision-board': return <VisionBoardBlock block={block} config={localConfig}/>
+      case 'budget-row': return <BudgetRowBlock block={block} config={localConfig}/>
+      case 'expense-tracker': return <ExpenseTrackerBlock block={block} config={localConfig}/>
+      case 'class-schedule': return <ClassScheduleBlock block={block} config={localConfig}/>
+      case 'project-tracker': return <ProjectTrackerBlock block={block} config={localConfig}/>
+      default: return <div className="h-4 border border-dashed rounded text-[8px] flex items-center justify-center text-ink-faint" style={{borderColor:`${localConfig.primaryColor}30`}}>{block.type}</div>
     }
   }
 
@@ -677,7 +793,7 @@ export const PlannerBlockRenderer: React.FC<BlockProps> = ({ block, config }) =>
       }}
     >
       {!isInline && block.label && block.type !== 'header' && (
-        <div className="text-[8px] font-bold uppercase tracking-[0.15em] mb-1.5" style={{color:`${config.primaryColor}60`}}>
+        <div className="text-[8px] font-bold uppercase tracking-[0.15em] mb-1.5" style={{color:`${localConfig.primaryColor}60`}}>
           {block.label}
         </div>
       )}

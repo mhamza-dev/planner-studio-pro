@@ -6,9 +6,9 @@ interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 export const Card: React.FC<CardProps> = ({ className, hover, selected, padding = 'md', children, ...props }) => (
   <div className={cn(
-    'bg-paper rounded-xl border border-border shadow-sm',
+    'glass-panel rounded-xl',
     { 'p-3':padding==='sm', 'p-4':padding==='md', 'p-6':padding==='lg' },
-    hover && 'transition-all duration-200 cursor-pointer hover:shadow-md hover:-translate-y-0.5',
+    hover && 'transition-all duration-200 cursor-pointer hover:shadow-card-hover hover:-translate-y-0.5 hover:bg-white',
     selected && 'ring-2 ring-accent/50 border-accent/40',
     className
   )} {...props}>{children}</div>

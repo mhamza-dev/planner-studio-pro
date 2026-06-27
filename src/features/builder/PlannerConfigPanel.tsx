@@ -1,5 +1,5 @@
 import React from 'react'
-import { Select } from '@/components/ui/Input'
+import { CustomSelect } from '@/components/ui/Input'
 import { Toggle } from '@/components/ui/Controls'
 import { ColorPicker } from '@/components/ui/ColorPicker'
 import { Divider } from '@/components/ui/index'
@@ -45,48 +45,45 @@ export const PlannerConfigPanel: React.FC<PlannerConfigPanelProps> = ({ planner 
 
       {/* Page setup */}
       <Section title="Page Setup">
-        <Select label="Page size" value={cfg.pageSize}
-          onChange={e => upd({ pageSize: e.target.value as any })}
+        <CustomSelect label="Page size" value={cfg.pageSize}
+          onChange={value => upd({ pageSize: value as any })}
           options={[
-            {value:'A4',label:'A4 — 210×297 mm'},
-            {value:'Letter',label:'Letter — 8.5×11 in'},
-            {value:'A5',label:'A5 — 148×210 mm'},
-            {value:'Half-Letter',label:'Half Letter — 5.5×8.5 in'},
-            {value:'Square',label:'Square — 8×8 in'},
+            {value:'A4',label:'A4', description:'210 x 297 mm'},
+            {value:'Letter',label:'Letter', description:'8.5 x 11 in'},
+            {value:'A5',label:'A5', description:'148 x 210 mm'},
+            {value:'Half-Letter',label:'Half Letter', description:'5.5 x 8.5 in'},
+            {value:'Square',label:'Square', description:'8 x 8 in'},
           ]}/>
-        <Select label="Orientation" value={cfg.orientation}
-          onChange={e => upd({ orientation: e.target.value as any })}
+        <CustomSelect label="Orientation" value={cfg.orientation}
+          onChange={value => upd({ orientation: value as any })}
           options={[{value:'portrait',label:'Portrait'},{value:'landscape',label:'Landscape'}]}/>
-        <Select label="Week starts on" value={String(cfg.weekStartsOn)}
-          onChange={e => upd({ weekStartsOn: Number(e.target.value) as 0|1 })}
+        <CustomSelect label="Week starts on" value={String(cfg.weekStartsOn)}
+          onChange={value => upd({ weekStartsOn: Number(value) as 0|1 })}
           options={[{value:'1',label:'Monday'},{value:'0',label:'Sunday'}]}/>
       </Section>
 
       <Divider/>
 
       {/* Typography */}
-      <Section title="Font Family">
-        <div className="space-y-1">
-          {fontCategories.map(cat => (
-            <div key={cat}>
-              <p className="text-[9px] text-ink-faint uppercase tracking-wider mb-1">{cat}</p>
-              <div className="space-y-0.5">
-                {fontsByCategory[cat].map(font => (
-                  <button key={font.name} onClick={() => upd({ fontFamily: font.name })}
-                    className={cn(
-                      'w-full text-left px-2.5 py-1.5 rounded-lg text-xs transition-colors',
-                      cfg.fontFamily === font.name
-                        ? 'bg-accent text-white font-medium'
-                        : 'text-primary hover:bg-surface-raised'
-                    )}
-                    style={{ fontFamily: font.name }}
-                  >
-                    {font.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-          ))}
+      <Section title="Typography">
+        <CustomSelect
+          label="Font family"
+          value={cfg.fontFamily}
+          onChange={value => upd({ fontFamily: value })}
+          options={fontCategories.flatMap(cat => fontsByCategory[cat].map(font => ({
+            value: font.name,
+            label: font.name,
+            description: cat,
+          })))}
+        />
+        <div className="rounded-xl border border-white/80 bg-white/70 p-3 shadow-xs">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-ink-faint">Preview</p>
+          <p className="mt-1 text-lg font-bold text-primary" style={{ fontFamily: cfg.fontFamily }}>
+            Printable Planner
+          </p>
+          <p className="text-xs text-ink-muted" style={{ fontFamily: cfg.fontFamily }}>
+            Clean pages, strong hierarchy, Etsy-ready layouts.
+          </p>
         </div>
       </Section>
 
@@ -115,18 +112,18 @@ export const PlannerConfigPanel: React.FC<PlannerConfigPanelProps> = ({ planner 
 
       {/* Background */}
       <Section title="Page Background">
-        <Select label="Pattern" value={cfg.backgroundPattern||'none'}
-          onChange={e => upd({ backgroundPattern: e.target.value as any })}
+        <CustomSelect label="Pattern" value={cfg.backgroundPattern||'none'}
+          onChange={value => upd({ backgroundPattern: value as any })}
           options={[
-            {value:'none',label:'None — clean white'},
+            {value:'none',label:'None', description:'Clean white page'},
             {value:'dots',label:'Dot grid'},
             {value:'grid',label:'Grid lines'},
             {value:'lines',label:'Horizontal lines'},
             {value:'crosshatch',label:'Crosshatch'},
             {value:'diagonal',label:'Diagonal lines'},
           ]}/>
-        <Select label="Border style" value={cfg.borderStyle||'none'}
-          onChange={e => upd({ borderStyle: e.target.value as any })}
+        <CustomSelect label="Border style" value={cfg.borderStyle||'none'}
+          onChange={value => upd({ borderStyle: value as any })}
           options={[
             {value:'none',label:'None'},
             {value:'hairline',label:'Hairline border'},
@@ -161,12 +158,12 @@ export const PlannerConfigPanel: React.FC<PlannerConfigPanelProps> = ({ planner 
       <Section title="Options">
         <Toggle label="Show page numbers" checked={cfg.showPageNumbers} onChange={v => upd({ showPageNumbers: v })} size="sm"/>
         {cfg.showPageNumbers && (
-          <Select label="Number style" value={cfg.pageNumberStyle||'numeric'}
-            onChange={e => upd({ pageNumberStyle: e.target.value as any })}
+          <CustomSelect label="Number style" value={cfg.pageNumberStyle||'numeric'}
+            onChange={value => upd({ pageNumberStyle: value as any })}
             options={[
-              {value:'numeric',label:'Numeric — 1, 2, 3'},
-              {value:'roman',label:'Roman — I, II, III'},
-              {value:'alpha',label:'Alpha — A, B, C'},
+              {value:'numeric',label:'Numeric', description:'1, 2, 3'},
+              {value:'roman',label:'Roman', description:'I, II, III'},
+              {value:'alpha',label:'Alpha', description:'A, B, C'},
             ]}/>
         )}
         <Toggle label="Show dates in footer" checked={cfg.showDates} onChange={v => upd({ showDates: v })} size="sm"/>

@@ -1,4 +1,6 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { Check, ChevronDown } from 'lucide-react'
 import { cn } from '@/utils/cn'
 
 // ── Label ────────────────────────────────────────────────────────────────────
@@ -27,8 +29,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           <input
             id={inputId} ref={ref}
             className={cn(
-              'w-full rounded-lg border bg-paper px-3 text-primary placeholder:text-ink-faint/60',
-              'border-border transition-colors duration-100',
+              'w-full rounded-lg border bg-white/85 px-3 text-primary placeholder:text-ink-faint/70 shadow-xs backdrop-blur',
+              'border-white/80 transition-colors duration-100',
               'focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent/50',
               'disabled:bg-surface-sunken disabled:cursor-not-allowed disabled:opacity-60',
               heights[inputSize],
@@ -62,7 +64,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         <textarea
           id={inputId} ref={ref}
           className={cn(
-            'w-full rounded-lg border border-border bg-paper px-3 py-2 text-sm text-primary placeholder:text-ink-faint/60',
+            'w-full rounded-lg border border-white/80 bg-white/85 px-3 py-2 text-sm text-primary placeholder:text-ink-faint/70 shadow-xs backdrop-blur',
             'transition-colors duration-100 resize-none',
             'focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent/50',
             'disabled:bg-surface-sunken disabled:cursor-not-allowed',
@@ -95,7 +97,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
         <select
           id={inputId} ref={ref}
           className={cn(
-            'w-full rounded-lg border border-border bg-paper px-3 text-sm text-primary cursor-pointer',
+            'w-full rounded-lg border border-white/80 bg-white/85 px-3 text-sm text-primary cursor-pointer shadow-xs backdrop-blur',
             'transition-colors duration-100 appearance-none',
             'focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent/50',
             selectSize === 'sm' ? 'h-7 text-xs' : 'h-9',
@@ -115,6 +117,107 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
   }
 )
 Select.displayName = 'Select'
+
+// ── Custom Select ────────────────────────────────────────────────────────────
+export interface CustomSelectOption {
+  label: string
+  value: string
+  description?: string
+  icon?: React.ReactNode
+}
+
+export interface CustomSelectProps {
+  label?: string
+  value: string
+  onChange: (value: string) => void
+  options: CustomSelectOption[]
+  placeholder?: string
+  className?: string
+  buttonClassName?: string
+}
+
+export const CustomSelect: React.FC<CustomSelectProps> = ({
+  label, value, onChange, options, placeholder = 'Select...', className, buttonClassName,
+}) => {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+  const selected = options.find(o => o.value === value)
+
+  useEffect(() => {
+    const h = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false) }
+    const k = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false) }
+    document.addEventListener('mousedown', h)
+    document.addEventListener('keydown', k)
+    return () => {
+      document.removeEventListener('mousedown', h)
+      document.removeEventListener('keydown', k)
+    }
+  }, [])
+
+  return (
+    <div className={cn('relative z-100', className)} ref={ref}>
+      {label && <Label>{label}</Label>}
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        className={cn(
+          'flex h-9 w-full items-center justify-between gap-2 rounded-lg border border-white/80 bg-white/90 px-3 text-left text-sm text-primary shadow-xs backdrop-blur transition-all',
+          'hover:bg-white focus:outline-none focus:ring-2 focus:ring-accent/30',
+          open && 'ring-2 ring-accent/25',
+          buttonClassName,
+        )}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+      >
+        <span className="flex min-w-0 items-center gap-2">
+          {selected?.icon && <span className="shrink-0 text-ink-muted">{selected.icon}</span>}
+          <span className={cn('truncate font-medium', !selected && 'text-ink-faint')}>{selected?.label ?? placeholder}</span>
+        </span>
+        <ChevronDown size={14} className={cn('shrink-0 text-ink-faint transition-transform', open && 'rotate-180 text-accent')}/>
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -6, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -4, scale: 0.97 }}
+            transition={{ duration: 0.14, ease: [0.16, 1, 0.3, 1] }}
+            className="absolute left-0 right-0 z-50 mt-2 max-h-72 overflow-y-auto rounded-xl border border-white/80 bg-white/95 p-1.5 shadow-float backdrop-blur-xl"
+            role="listbox"
+          >
+            {options.map(option => {
+              const active = option.value === value
+              return (
+                <button
+                  key={option.value}
+                  type="button"
+                  role="option"
+                  aria-selected={active}
+                  onClick={() => { onChange(option.value); setOpen(false) }}
+                  className={cn(
+                    'group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left transition-colors',
+                    active ? 'bg-accent/10 text-accent' : 'text-primary hover:bg-primary hover:text-white',
+                  )}
+                >
+                  <span className={cn(
+                    'flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border',
+                    active ? 'border-blue-100 bg-blue-50 text-accent' : 'border-border bg-white text-ink-muted group-hover:border-white/20 group-hover:bg-white/10 group-hover:text-white',
+                  )}>
+                    {active ? <Check size={13}/> : option.icon}
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-xs font-semibold">{option.label}</span>
+                    {option.description && <span className="block truncate text-[10px] text-ink-muted group-hover:text-white/65">{option.description}</span>}
+                  </span>
+                </button>
+              )
+            })}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}
 
 // ── Inline number spinner ─────────────────────────────────────────────────────
 export interface SpinnerProps {

@@ -3,15 +3,15 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/utils/cn'
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-1.5 font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:ring-offset-1 disabled:pointer-events-none disabled:opacity-40 select-none whitespace-nowrap shrink-0',
+  'inline-flex items-center justify-center gap-1.5 font-semibold transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-45 select-none whitespace-nowrap shrink-0',
   {
     variants: {
       variant: {
-        default: 'bg-primary text-white hover:bg-primary-800 active:bg-primary-900 shadow-xs',
-        secondary: 'bg-surface-raised border border-border text-primary hover:bg-surface-sunken active:bg-border/40 shadow-xs',
-        outline: 'border border-border bg-paper text-primary hover:bg-surface-raised active:bg-surface-sunken shadow-xs',
-        ghost: 'text-ink-muted hover:bg-surface-raised hover:text-primary active:bg-surface-sunken',
-        accent: 'bg-accent text-white hover:bg-accent-dark active:bg-accent-dark shadow-xs',
+        default: 'bg-primary text-white hover:bg-primary-800 active:bg-primary-900 shadow-card hover:shadow-card-hover hover:-translate-y-0.5',
+        secondary: 'bg-white/80 border border-white/80 text-primary hover:bg-white active:bg-surface-sunken shadow-xs backdrop-blur',
+        outline: 'border border-border bg-white/80 text-primary hover:bg-white active:bg-surface-sunken shadow-xs backdrop-blur',
+        ghost: 'text-ink-muted hover:bg-white/75 hover:text-primary active:bg-surface-sunken',
+        accent: 'bg-accent text-white hover:bg-accent-dark active:bg-accent-dark shadow-card hover:shadow-card-hover hover:-translate-y-0.5',
         danger: 'bg-red-600 text-white hover:bg-red-700 active:bg-red-800 shadow-xs',
         'danger-ghost': 'text-red-500 hover:bg-red-50 hover:text-red-600 active:bg-red-100',
         success: 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-xs',
