@@ -5,6 +5,7 @@ import { PlannerBlockRenderer } from '@/components/planner/BlockRenderer'
 import { usePlannerStore } from '@/store/plannerStore'
 import { useUIStore } from '@/store/uiStore'
 import { DEFAULT_BLOCK_STYLE, getDefaultBlockConfig } from '@/lib/defaults'
+import { estimatePageBlocksHeight, getPageContentHeight } from '@/lib/pageLayout'
 import type { PlannerPage, PlannerConfig, BlockType, PlannerBlock } from '@/types'
 import { cn } from '@/utils/cn'
 
@@ -121,10 +122,13 @@ function DraggableBlock({ block, index, config, plannerId, pageId, isSelected, o
 // ── Main canvas ───────────────────────────────────────────────────────────────
 interface CanvasProps {
   page: PlannerPage; config: PlannerConfig
-  plannerId: string; pageRefs: React.MutableRefObject<HTMLElement[]>; pageIndex: number
+  plannerId: string; pageRefs: React.MutableRefObject<HTMLElement[]>
+  pageIndex: number; totalPages: number; isActive?: boolean
 }
 
-export const BuilderCanvas: React.FC<CanvasProps> = ({ page, config, plannerId, pageRefs, pageIndex }) => {
+export const BuilderCanvas: React.FC<CanvasProps> = ({
+  page, config, plannerId, pageRefs, pageIndex, totalPages, isActive = false,
+}) => {
   const { addBlock, setSelectedBlock, selectedBlockId, reorderBlocks } = usePlannerStore()
   const { previewZoom, showGrid } = useUIStore()
 
@@ -155,6 +159,9 @@ export const BuilderCanvas: React.FC<CanvasProps> = ({ page, config, plannerId, 
   }
   const aspectRatio = aspectRatios[page.pageSize] ?? (210 / 297)
   const sorted = [...page.blocks].sort((a, b) => a.order - b.order)
+  const contentHeight = estimatePageBlocksHeight(sorted)
+  const maxContentHeight = getPageContentHeight(page, config)
+  const hasOverflow = contentHeight > maxContentHeight
 
   const patternStyle = getPatternStyle(page.backgroundPattern || config.backgroundPattern, config.primaryColor)
   const borderStyle = getBorderStyle(page.borderStyle || config.borderStyle, config.primaryColor)
@@ -176,6 +183,7 @@ export const BuilderCanvas: React.FC<CanvasProps> = ({ page, config, plannerId, 
           className={cn(
             'relative bg-white mx-auto paper-shadow transition-shadow duration-200',
             isOver && canDrop && 'paper-shadow-hover',
+            isActive && 'ring-2 ring-accent/40',
             page.borderStyle === 'corner-marks' && 'corner-marks',
           )}
           style={{ width: '100%', aspectRatio: String(aspectRatio), ...patternStyle, ...borderStyle }}
@@ -240,6 +248,14 @@ export const BuilderCanvas: React.FC<CanvasProps> = ({ page, config, plannerId, 
             </div>
           )}
 
+          {hasOverflow && (
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 pointer-events-none">
+              <span className="bg-amber-500 text-white text-[9px] font-semibold px-2.5 py-1 rounded-full shadow-sm">
+                Content exceeds page — add blocks to a new page
+              </span>
+            </div>
+          )}
+
           {/* Empty state */}
           {sorted.filter(b => !b.hidden).length === 0 && !isOver && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -253,8 +269,8 @@ export const BuilderCanvas: React.FC<CanvasProps> = ({ page, config, plannerId, 
 
         {/* Page label below paper */}
         <div className="text-center mt-3">
-          <span className="text-xs text-ink-muted font-medium">{page.title}</span>
-          <span className="text-xs text-ink-faint ml-2">({pageIndex + 1}/{pageRefs.current.length || '?'})</span>
+          <span className={cn('text-xs font-medium', isActive ? 'text-primary' : 'text-ink-muted')}>{page.title}</span>
+          <span className="text-xs text-ink-faint ml-2">({pageIndex + 1}/{totalPages})</span>
         </div>
       </div>
     </div>

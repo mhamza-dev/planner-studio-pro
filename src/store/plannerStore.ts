@@ -6,6 +6,7 @@ import type {
 } from '@/types'
 import { generateId } from '@/utils/id'
 import { PLANNER_TYPE_PAGES, DEFAULT_CONFIG, PLANNER_TYPE_LABELS } from '@/lib/defaults'
+import { resolveBlockTargetPage, wouldPageOverflow } from '@/lib/pageLayout'
 
 const MAX_HISTORY = 10
 
@@ -43,7 +44,7 @@ interface PlannerState {
   canRedo: (plannerId: string) => boolean
 
   // Pages
-  addPage: (plannerId: string, afterPageId?: string) => string
+  addPage: (plannerId: string, afterPageId?: string, activate?: boolean) => string
   deletePage: (plannerId: string, pageId: string) => void
   duplicatePage: (plannerId: string, pageId: string) => void
   reorderPages: (plannerId: string, fromIndex: number, toIndex: number) => void
@@ -284,7 +285,7 @@ export const usePlannerStore = create<PlannerState>()(
       canRedo: (plannerId) => (getHistory(plannerId).future.length > 0),
 
       // ── Pages ─────────────────────────────────────────────────────────────
-      addPage: (plannerId, afterPageId) => {
+      addPage: (plannerId, afterPageId, activate = true) => {
         const pageId = generateId('page')
         set(s => ({
           planners: s.planners.map(p => {
@@ -298,7 +299,7 @@ export const usePlannerStore = create<PlannerState>()(
             pages.splice(afterIdx + 1, 0, newPage)
             return { ...p, pages: pages.map((pg, i) => ({ ...pg, order: i })), updatedAt: new Date().toISOString() }
           }),
-          activePageId: pageId,
+          ...(activate ? { activePageId: pageId } : {}),
           isDirty: true,
         }))
         return pageId
@@ -393,13 +394,26 @@ export const usePlannerStore = create<PlannerState>()(
 
       // ── Blocks ────────────────────────────────────────────────────────────
       addBlock: (plannerId, pageId, block) => {
+        const planner = get().planners.find(p => p.id === plannerId)
+        if (!planner) return ''
+
+        let targetPageId = resolveBlockTargetPage(planner.pages, pageId, block, planner.config)
+        let pages = planner.pages
+        let targetPage = pages.find(p => p.id === targetPageId)
+
+        if (targetPage && wouldPageOverflow(targetPage, targetPage.blocks, block, planner.config)) {
+          targetPageId = get().addPage(plannerId, pageId, false)
+          pages = get().planners.find(p => p.id === plannerId)?.pages ?? pages
+          targetPage = pages.find(p => p.id === targetPageId)
+        }
+
         const id = generateId('block')
         const newBlock: PlannerBlock = { ...block, id }
         get().pushHistory(plannerId, `Add ${block.type}`)
         set(s => ({
           planners: s.planners.map(p => p.id !== plannerId ? p : {
             ...p,
-            pages: p.pages.map(pg => pg.id !== pageId ? pg : {
+            pages: p.pages.map(pg => pg.id !== targetPageId ? pg : {
               ...pg, blocks: [...pg.blocks, { ...newBlock, order: pg.blocks.length }],
             }),
             updatedAt: new Date().toISOString(),
@@ -456,14 +470,34 @@ export const usePlannerStore = create<PlannerState>()(
       },
 
       duplicateBlock: (plannerId, pageId, blockId) => {
+        const planner = get().planners.find(p => p.id === plannerId)
+        if (!planner) return
+        const page = planner.pages.find(pg => pg.id === pageId)
+        const orig = page?.blocks.find(b => b.id === blockId)
+        if (!orig) return
+
+        const dupPayload: Omit<PlannerBlock, 'id'> = {
+          type: orig.type,
+          label: orig.label,
+          order: 0,
+          style: { ...orig.style },
+          config: { ...orig.config },
+          locked: orig.locked,
+          hidden: orig.hidden,
+        }
+
+        let targetPageId = resolveBlockTargetPage(planner.pages, pageId, dupPayload, planner.config)
+        const targetPage = planner.pages.find(p => p.id === targetPageId)
+        if (targetPage && wouldPageOverflow(targetPage, targetPage.blocks, dupPayload, planner.config)) {
+          targetPageId = get().addPage(plannerId, pageId, false)
+        }
+
         const newId = generateId('block')
         set(s => ({
           planners: s.planners.map(p => p.id !== plannerId ? p : {
             ...p,
             pages: p.pages.map(pg => {
-              if (pg.id !== pageId) return pg
-              const orig = pg.blocks.find(b => b.id === blockId)
-              if (!orig) return pg
+              if (pg.id !== targetPageId) return pg
               const dup: PlannerBlock = { ...JSON.parse(JSON.stringify(orig)), id: newId, order: pg.blocks.length }
               return { ...pg, blocks: [...pg.blocks, dup] }
             }),

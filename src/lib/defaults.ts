@@ -68,9 +68,9 @@ export function makePage(
 
 export function getDefaultBlockConfig(type: BlockType): Record<string, unknown> {
   switch (type) {
-    case 'time-slots': return { startHour: 6, endHour: 22, interval: 60 }
-    case 'todo-list': return { count: 8, showCheckboxes: true }
-    case 'notes': return { lines: 6 }
+    case 'time-slots': return { startHour: 8, endHour: 20, interval: 60 }
+    case 'todo-list': return { count: 6, showCheckboxes: true }
+    case 'notes': return { lines: 4 }
     case 'habit-grid': return { habitCount: 8, daysInMonth: 31, habits: [] }
     case 'goal-section': return { count: 5 }
     case 'gratitude': return { count: 3 }
@@ -129,15 +129,17 @@ export const PLANNER_TYPE_PAGES: Record<string, () => PlannerPage[]> = {
     makePage('Daily Plan', 0, [
       makeBlock('cover-title', 'Cover', 0, { title: 'Daily Planner', subtitle: String(new Date().getFullYear()) }),
     ]),
-    makePage('Today', 1, [
+    makePage('Schedule & Priorities', 1, [
       makeBlock('date-header', 'Date', 0, { showDay: true, showDate: true }),
       makeBlock('header', 'Top Priorities', 1),
       makeBlock('goal-section', 'Priorities', 2, { count: 3 }),
-      makeBlock('time-slots', 'Schedule', 3, { startHour: 6, endHour: 22, interval: 60 }),
-      makeBlock('todo-list', 'Tasks', 4, { count: 8 }),
-      makeBlock('notes', 'Notes', 5, { lines: 5 }),
-      makeBlock('gratitude', 'Gratitude', 6, { count: 3 }),
-      makeBlock('reflection', 'End of Day', 7),
+      makeBlock('time-slots', 'Schedule', 3, { startHour: 8, endHour: 20, interval: 60 }),
+    ]),
+    makePage('Tasks & Reflection', 2, [
+      makeBlock('todo-list', 'Tasks', 0, { count: 6 }),
+      makeBlock('notes', 'Notes', 1, { lines: 4 }),
+      makeBlock('gratitude', 'Gratitude', 2, { count: 3 }),
+      makeBlock('reflection', 'End of Day', 3),
     ]),
   ],
 
@@ -171,15 +173,17 @@ export const PLANNER_TYPE_PAGES: Record<string, () => PlannerPage[]> = {
   ],
 
   budget: () => [
-    makePage('Budget Planner', 0, [
+    makePage('Budget Overview', 0, [
       makeBlock('date-header', 'Month', 0, { showMonth: true }),
       makeBlock('header', 'Income', 1),
       makeBlock('budget-row', 'Income Sources', 2, { rows: 4 }),
       makeBlock('header', 'Fixed Expenses', 3),
-      makeBlock('budget-row', 'Fixed Expenses', 4, { rows: 6 }),
-      makeBlock('header', 'Variable Expenses', 5),
-      makeBlock('expense-tracker', 'Expense Log', 6, { rows: 10 }),
-      makeBlock('savings-tracker', 'Savings Goal', 7, { goal: 1000, current: 0, currency: '$' }),
+      makeBlock('budget-row', 'Fixed Expenses', 4, { rows: 5 }),
+    ]),
+    makePage('Expenses & Savings', 1, [
+      makeBlock('header', 'Variable Expenses', 0),
+      makeBlock('expense-tracker', 'Expense Log', 1, { rows: 8 }),
+      makeBlock('savings-tracker', 'Savings Goal', 2, { goal: 1000, current: 0, currency: '$' }),
     ]),
   ],
 
@@ -194,15 +198,17 @@ export const PLANNER_TYPE_PAGES: Record<string, () => PlannerPage[]> = {
   ],
 
   wellness: () => [
-    makePage('Wellness Log', 0, [
+    makePage('Wellness Check-In', 0, [
       makeBlock('date-header', 'Date', 0, { showDate: true }),
       makeBlock('mood-tracker', 'Mood', 1),
       makeBlock('water-tracker', 'Water', 2, { goal: 8 }),
       makeBlock('sleep-tracker', 'Sleep', 3),
       makeBlock('meal-planner', 'Meals', 4),
-      makeBlock('workout-log', 'Movement', 5, { exerciseCount: 3 }),
-      makeBlock('gratitude', 'Gratitude', 6, { count: 3 }),
-      makeBlock('notes', 'Reflections', 7, { lines: 4 }),
+    ]),
+    makePage('Movement & Reflection', 1, [
+      makeBlock('workout-log', 'Movement', 0, { exerciseCount: 3 }),
+      makeBlock('gratitude', 'Gratitude', 1, { count: 3 }),
+      makeBlock('notes', 'Reflections', 2, { lines: 4 }),
     ]),
   ],
 
@@ -254,10 +260,12 @@ export const PLANNER_TYPE_PAGES: Record<string, () => PlannerPage[]> = {
       makeBlock('date-header', 'Date', 0, { showDay: true, showDate: true }),
       makeBlock('mood-tracker', 'Mood Check-In', 1),
       makeBlock('quote-block', 'Daily Quote', 2, { quote: 'Write what should not be forgotten.', author: 'Isabel Allende' }),
-      makeBlock('brain-dump', 'Morning Pages', 3, { lines: 14 }),
-      makeBlock('gratitude', 'Gratitude', 4, { count: 3 }),
-      makeBlock('goal-section', 'Intentions', 5, { count: 3 }),
-      makeBlock('reflection', 'Evening Reflection', 6),
+      makeBlock('gratitude', 'Gratitude', 3, { count: 3 }),
+      makeBlock('goal-section', 'Intentions', 4, { count: 3 }),
+    ]),
+    makePage('Writing & Reflection', 1, [
+      makeBlock('brain-dump', 'Morning Pages', 0, { lines: 10 }),
+      makeBlock('reflection', 'Evening Reflection', 1),
     ]),
   ],
 
@@ -265,11 +273,13 @@ export const PLANNER_TYPE_PAGES: Record<string, () => PlannerPage[]> = {
     makePage('ADHD Daily', 0, [
       makeBlock('date-header', 'Date', 0, { showDay: true, showDate: true }),
       makeBlock('goal-section', 'Top 3 Tasks', 1, { count: 3 }),
-      makeBlock('time-slots', 'Time Blocks', 2, { startHour: 8, endHour: 20, interval: 60 }),
-      makeBlock('adhd-brain-dump', 'Brain Dump', 3, { lines: 10 }),
-      makeBlock('adhd-routine', 'Routine', 4, { steps: 6 }),
-      makeBlock('adhd-reward', 'Rewards', 5, { tasks: 3 }),
-      makeBlock('notes', 'Notes', 6, { lines: 4 }),
+      makeBlock('time-slots', 'Time Blocks', 2, { startHour: 8, endHour: 18, interval: 60 }),
+    ]),
+    makePage('Focus & Rewards', 1, [
+      makeBlock('adhd-brain-dump', 'Brain Dump', 0, { lines: 8 }),
+      makeBlock('adhd-routine', 'Routine', 1, { steps: 6 }),
+      makeBlock('adhd-reward', 'Rewards', 2, { tasks: 3 }),
+      makeBlock('notes', 'Notes', 3, { lines: 4 }),
     ]),
   ],
 
@@ -277,11 +287,13 @@ export const PLANNER_TYPE_PAGES: Record<string, () => PlannerPage[]> = {
     makePage('Wedding Planner', 0, [
       makeBlock('cover-title', 'Cover', 0, { title: 'Wedding Planner', subtitle: '2025' }),
     ]),
-    makePage('Planning', 1, [
+    makePage('Checklist & Vendors', 1, [
       makeBlock('wedding-checklist', 'Master Checklist', 0, { categories: ['Venue', 'Catering', 'Flowers', 'Attire'], itemsPerCat: 4 }),
-      makeBlock('vendor-tracker', 'Vendors', 1, { vendors: 6 }),
-      makeBlock('budget-row', 'Budget', 2, { rows: 8 }),
-      makeBlock('notes', 'Notes', 3, { lines: 4 }),
+      makeBlock('vendor-tracker', 'Vendors', 1, { vendors: 5 }),
+    ]),
+    makePage('Budget & Notes', 2, [
+      makeBlock('budget-row', 'Budget', 0, { rows: 6 }),
+      makeBlock('notes', 'Notes', 1, { lines: 4 }),
     ]),
   ],
 

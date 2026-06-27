@@ -29,6 +29,7 @@ export default function BuilderPage() {
   const {
     getActivePlanner, getActivePage, setSelectedBlock, selectedBlockId,
     addBlock, undo, redo, canUndo, canRedo, isDirty, markSaved,
+    setActivePage, activePageId,
   } = usePlannerStore()
   const {
     previewZoom, setPreviewZoom, showGrid, setShowGrid,
@@ -40,7 +41,14 @@ export default function BuilderPage() {
   const planner = getActivePlanner()
   const page = getActivePage()
   const pageRefs = useRef<HTMLElement[]>([])
-  const selectedBlock = page?.blocks.find(b => b.id === selectedBlockId) ?? null
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const pageAnchorRefs = useRef<Map<string, HTMLDivElement>>(new Map())
+  const isScrollingFromPanel = useRef(false)
+  const selectedBlockPage = selectedBlockId && planner
+    ? planner.pages.find(pg => pg.blocks.some(b => b.id === selectedBlockId))
+    : null
+  const selectedBlock = selectedBlockPage?.blocks.find(b => b.id === selectedBlockId) ?? null
+  const sortedPages = planner ? [...planner.pages].sort((a, b) => a.order - b.order) : []
 
   // Auto-save every 30s when dirty
   useEffect(() => {
@@ -65,6 +73,48 @@ export default function BuilderPage() {
     window.addEventListener('keydown', handle)
     return () => window.removeEventListener('keydown', handle)
   }, [planner, undo, redo, previewZoom, setPreviewZoom, setSelectedBlock, setExportModalOpen, setShortcutsModalOpen])
+
+  // Scroll canvas to active page when selected from the pages panel
+  useEffect(() => {
+    if (!activePageId || !scrollRef.current) return
+    const anchor = pageAnchorRefs.current.get(activePageId)
+    if (!anchor) return
+
+    const container = scrollRef.current
+    const containerRect = container.getBoundingClientRect()
+    const anchorRect = anchor.getBoundingClientRect()
+    const visible = anchorRect.top >= containerRect.top + 40 && anchorRect.bottom <= containerRect.bottom - 40
+    if (!visible) {
+      isScrollingFromPanel.current = true
+      anchor.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      window.setTimeout(() => { isScrollingFromPanel.current = false }, 600)
+    }
+  }, [activePageId])
+
+  // Update active page while scrolling through stacked canvases
+  useEffect(() => {
+    if (!planner || !scrollRef.current) return
+    const container = scrollRef.current
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (isScrollingFromPanel.current) return
+        const best = entries
+          .filter(entry => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
+        const pageId = best?.target.getAttribute('data-page-id')
+        if (pageId && pageId !== usePlannerStore.getState().activePageId) setActivePage(pageId)
+      },
+      { root: container, threshold: [0.35, 0.5, 0.65] },
+    )
+
+    sortedPages.forEach(pg => {
+      const anchor = pageAnchorRefs.current.get(pg.id)
+      if (anchor) observer.observe(anchor)
+    })
+
+    return () => observer.disconnect()
+  }, [planner?.id, sortedPages.length, setActivePage])
 
   const handleAddBlock = useCallback((blockType: BlockType) => {
     if (!planner || !page) return
@@ -197,14 +247,36 @@ export default function BuilderPage() {
             </div>
           )}
 
-          {/* Centre: Canvas */}
-          <div className="flex-1 overflow-auto bg-[radial-gradient(circle_at_50%_0%,rgba(37,99,235,.09),transparent_28rem),linear-gradient(180deg,#EEF2F7,#E8EDF5)]" onClick={e => { if (e.target === e.currentTarget) setSelectedBlock(null) }}>
-            {page ? (
-              <BuilderCanvas
-                page={page} config={planner.config} plannerId={planner.id}
-                pageRefs={pageRefs}
-                pageIndex={planner.pages.findIndex(p => p.id === page.id)}
-              />
+          {/* Centre: Canvas — all pages stacked for scroll navigation */}
+          <div
+            ref={scrollRef}
+            className="flex-1 overflow-auto bg-[radial-gradient(circle_at_50%_0%,rgba(37,99,235,.09),transparent_28rem),linear-gradient(180deg,#EEF2F7,#E8EDF5)]"
+            onClick={e => { if (e.target === e.currentTarget) setSelectedBlock(null) }}
+          >
+            {sortedPages.length > 0 ? (
+              <div className="flex flex-col items-center gap-20 py-8">
+                {sortedPages.map((pg, pageIndex) => (
+                  <div
+                    key={pg.id}
+                    ref={el => {
+                      if (el) pageAnchorRefs.current.set(pg.id, el)
+                      else pageAnchorRefs.current.delete(pg.id)
+                    }}
+                    data-page-id={pg.id}
+                    className="w-full scroll-mt-8"
+                  >
+                    <BuilderCanvas
+                      page={pg}
+                      config={planner.config}
+                      plannerId={planner.id}
+                      pageRefs={pageRefs}
+                      pageIndex={pageIndex}
+                      totalPages={sortedPages.length}
+                      isActive={pg.id === activePageId}
+                    />
+                  </div>
+                ))}
+              </div>
             ) : (
               <div className="flex items-center justify-center h-full"><LoadSpinner size="lg"/></div>
             )}
@@ -224,8 +296,8 @@ export default function BuilderPage() {
                 )}
               </div>
               <div className="flex-1 overflow-hidden">
-                {selectedBlock && page ? (
-                  <BlockProperties key={selectedBlock.id} block={selectedBlock} plannerId={planner.id} pageId={page.id}/>
+                {selectedBlock && selectedBlockPage ? (
+                  <BlockProperties key={selectedBlock.id} block={selectedBlock} plannerId={planner.id} pageId={selectedBlockPage.id}/>
                 ) : (
                   <PlannerConfigPanel planner={planner}/>
                 )}
