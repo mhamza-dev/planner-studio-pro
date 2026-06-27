@@ -5,455 +5,103 @@ const cfg = (overrides: object) => ({ ...DEFAULT_CONFIG, ...overrides })
 
 export const TEMPLATES: Template[] = [
   // ── DAILY ──────────────────────────────────────────────────────────────────
-  {
-    id: 'tpl_daily_minimal', name: 'Minimal Daily', type: 'daily',
-    description: 'Clean, structured daily planner with time blocks and reflection.',
-    thumbnail: '', category: 'Daily', tags: ['minimal', 'clean', 'productivity'],
-    pages: PLANNER_TYPE_PAGES.daily(), isFavorite: false, isPremium: false, downloads: 4821,
-    accentHue: '220', config: cfg({ primaryColor: '#0F172A', accentColor: '#E2E8F0' }),
-  },
-  {
-    id: 'tpl_daily_sage', name: 'Sage Daily', type: 'daily',
-    description: 'Nature-inspired daily planner in calming sage and forest tones.',
-    thumbnail: '', category: 'Daily', tags: ['sage', 'nature', 'calm'],
-    pages: PLANNER_TYPE_PAGES.daily(), isFavorite: false, isPremium: false, downloads: 2941,
-    accentHue: '150', config: cfg({ primaryColor: '#1A3A2A', secondaryColor: '#52796F', accentColor: '#CAD2C5' }),
-  },
-  {
-    id: 'tpl_daily_executive', name: 'Executive Daily', type: 'daily',
-    description: 'Power planner for executives — priority matrix, meetings, and EOD review.',
-    thumbnail: '', category: 'Daily', tags: ['executive', 'business', 'leadership'],
-    pages: PLANNER_TYPE_PAGES.daily(), isFavorite: false, isPremium: true, downloads: 3204,
-    accentHue: '215', config: cfg({ primaryColor: '#0C2340', accentColor: '#B8D4E8' }),
-  },
-  {
-    id: 'tpl_daily_rose', name: 'Rose Daily', type: 'daily',
-    description: 'Elegant daily planner in rose and blush for a warm, personal feel.',
-    thumbnail: '', category: 'Daily', tags: ['rose', 'elegant', 'feminine'],
-    pages: PLANNER_TYPE_PAGES.daily(), isFavorite: false, isPremium: false, downloads: 1872,
-    accentHue: '345', config: cfg({ primaryColor: '#4A1942', secondaryColor: '#9D174D', accentColor: '#FBCFE8' }),
-  },
-  {
-    id: 'tpl_daily_ink', name: 'Ink Daily', type: 'daily',
-    description: 'Bold monochrome daily planner with strong typographic hierarchy.',
-    thumbnail: '', category: 'Daily', tags: ['bold', 'monochrome', 'minimal'],
-    pages: PLANNER_TYPE_PAGES.daily(), isFavorite: false, isPremium: false, downloads: 1540,
-    accentHue: '0', config: cfg({ primaryColor: '#0D0D0D', secondaryColor: '#404040', accentColor: '#D4D4D4' }),
-  },
+  { id:'tpl_daily_minimal', name:'Minimal Daily', type:'daily', description:'Clean, structured daily planner with time blocks and reflection.', thumbnail:'', category:'Daily', tags:['minimal','clean','productivity'], pages:PLANNER_TYPE_PAGES.daily(), isFavorite:false, isPremium:false, isTrending:true, downloads:4821, accentHue:'220', themeId:'minimalist', config:cfg({ primaryColor:'#0F172A', accentColor:'#E2E8F0' }) },
+  { id:'tpl_daily_sage', name:'Sage Daily', type:'daily', description:'Nature-inspired daily planner in calming sage and forest tones.', thumbnail:'', category:'Daily', tags:['sage','nature','calm'], pages:PLANNER_TYPE_PAGES.daily(), isFavorite:false, isPremium:false, downloads:2941, accentHue:'150', themeId:'cottagecore', config:cfg({ primaryColor:'#1A3A2A', secondaryColor:'#52796F', accentColor:'#CAD2C5' }) },
+  { id:'tpl_daily_executive', name:'Executive Daily', type:'daily', description:'Power planner for executives — priority matrix, meetings, and EOD review.', thumbnail:'', category:'Daily', tags:['executive','business','leadership'], pages:PLANNER_TYPE_PAGES.daily(), isFavorite:false, isPremium:true, isBestseller:true, downloads:3204, accentHue:'215', themeId:'productivity', config:cfg({ primaryColor:'#0C2340', accentColor:'#B8D4E8' }) },
+  { id:'tpl_daily_rose', name:'Rose Daily', type:'daily', description:'Elegant daily planner in rose and blush for a warm, personal feel.', thumbnail:'', category:'Daily', tags:['rose','elegant','feminine'], pages:PLANNER_TYPE_PAGES.daily(), isFavorite:false, isPremium:false, downloads:1872, accentHue:'345', themeId:'floral', config:cfg({ primaryColor:'#4A1942', secondaryColor:'#9D174D', accentColor:'#FBCFE8' }) },
+  { id:'tpl_daily_ink', name:'Ink Daily', type:'daily', description:'Bold monochrome daily planner with strong typographic hierarchy.', thumbnail:'', category:'Daily', tags:['bold','monochrome','minimal'], pages:PLANNER_TYPE_PAGES.daily(), isFavorite:false, isPremium:false, downloads:1540, accentHue:'0', themeId:'minimalist', config:cfg({ primaryColor:'#0D0D0D', secondaryColor:'#404040', accentColor:'#D4D4D4' }) },
+  { id:'tpl_daily_boho', name:'Boho Daily', type:'daily', description:'Earthy boho daily planner with warm amber and natural tones.', thumbnail:'', category:'Daily', tags:['boho','earthy','warm'], pages:PLANNER_TYPE_PAGES.daily(), isFavorite:false, isPremium:false, downloads:2100, accentHue:'35', themeId:'boho', config:cfg({ primaryColor:'#5C4033', accentColor:'#D4A26A' }) },
+  { id:'tpl_daily_adhd', name:'ADHD Daily', type:'adhd', description:'Brain-friendly daily planner with clear visual cues and minimal overwhelm.', thumbnail:'', category:'ADHD', tags:['adhd','focus','brain-friendly'], pages:PLANNER_TYPE_PAGES.daily(), isFavorite:false, isPremium:true, isBestseller:true, downloads:4560, accentHue:'290', themeId:'kawaii', config:cfg({ primaryColor:'#AD1457', accentColor:'#FF80AB' }) },
+  { id:'tpl_daily_timeblock', name:'Time Blocking Pro', type:'daily', description:'Complete time blocking planner for peak productivity sessions.', thumbnail:'', category:'Daily', tags:['time-blocking','productivity','focus'], pages:PLANNER_TYPE_PAGES.daily(), isFavorite:false, isPremium:true, isTrending:true, downloads:3890, accentHue:'215', themeId:'productivity', config:cfg({ primaryColor:'#1565C0', accentColor:'#2196F3' }) },
 
   // ── WEEKLY ─────────────────────────────────────────────────────────────────
-  {
-    id: 'tpl_weekly_classic', name: 'Classic Weekly', type: 'weekly',
-    description: 'Timeless 7-day column layout with goal tracking and notes.',
-    thumbnail: '', category: 'Weekly', tags: ['classic', 'structured', 'weekly'],
-    pages: PLANNER_TYPE_PAGES.weekly(), isFavorite: false, isPremium: false, downloads: 5241,
-    accentHue: '220', config: cfg({ primaryColor: '#0F172A', accentColor: '#E2E8F0' }),
-  },
-  {
-    id: 'tpl_weekly_blush', name: 'Blush Weekly', type: 'weekly',
-    description: 'Soft blush and dusty pink weekly planner with elegant styling.',
-    thumbnail: '', category: 'Weekly', tags: ['blush', 'feminine', 'elegant'],
-    pages: PLANNER_TYPE_PAGES.weekly(), isFavorite: false, isPremium: true, downloads: 2198,
-    accentHue: '345', config: cfg({ primaryColor: '#4A1942', accentColor: '#F5D0CA' }),
-  },
-  {
-    id: 'tpl_weekly_indigo', name: 'Indigo Weekly', type: 'weekly',
-    description: 'Vibrant indigo-accented weekly planner with bold section headers.',
-    thumbnail: '', category: 'Weekly', tags: ['indigo', 'bold', 'colorful'],
-    pages: PLANNER_TYPE_PAGES.weekly(), isFavorite: false, isPremium: false, downloads: 1784,
-    accentHue: '245', config: cfg({ primaryColor: '#1E1B4B', secondaryColor: '#4338CA', accentColor: '#C7D2FE' }),
-  },
+  { id:'tpl_weekly_classic', name:'Classic Weekly', type:'weekly', description:'Timeless 7-day column layout with goal tracking and notes.', thumbnail:'', category:'Weekly', tags:['classic','structured','weekly'], pages:PLANNER_TYPE_PAGES.weekly(), isFavorite:false, isPremium:false, isBestseller:true, downloads:5241, accentHue:'220', themeId:'minimalist', config:cfg({ primaryColor:'#0F172A', accentColor:'#E2E8F0' }) },
+  { id:'tpl_weekly_blush', name:'Blush Weekly', type:'weekly', description:'Soft blush and dusty pink weekly planner with elegant styling.', thumbnail:'', category:'Weekly', tags:['blush','feminine','elegant'], pages:PLANNER_TYPE_PAGES.weekly(), isFavorite:false, isPremium:true, downloads:2198, accentHue:'345', themeId:'floral', config:cfg({ primaryColor:'#4A1942', accentColor:'#F5D0CA' }) },
+  { id:'tpl_weekly_indigo', name:'Indigo Weekly', type:'weekly', description:'Vibrant indigo weekly planner with bold section headers.', thumbnail:'', category:'Weekly', tags:['indigo','bold','colorful'], pages:PLANNER_TYPE_PAGES.weekly(), isFavorite:false, isPremium:false, downloads:1784, accentHue:'245', themeId:'pastelDreams', config:cfg({ primaryColor:'#1E1B4B', secondaryColor:'#4338CA', accentColor:'#C7D2FE' }) },
+  { id:'tpl_weekly_academic', name:'Academic Weekly', type:'student', description:'Student-focused weekly planner with class schedule and assignments.', thumbnail:'', category:'Student', tags:['academic','student','weekly'], pages:PLANNER_TYPE_PAGES.weekly(), isFavorite:false, isPremium:false, downloads:3200, accentHue:'215', themeId:'productivity', config:cfg({ primaryColor:'#1565C0', accentColor:'#BBDEFB' }) },
+  { id:'tpl_weekly_boho', name:'Boho Weekly', type:'weekly', description:'Earthy boho weekly view with natural botanical accents.', thumbnail:'', category:'Weekly', tags:['boho','nature','weekly'], pages:PLANNER_TYPE_PAGES.weekly(), isFavorite:false, isPremium:false, downloads:1650, accentHue:'35', themeId:'boho', config:cfg({ primaryColor:'#5C4033', accentColor:'#D4A26A' }) },
 
   // ── MONTHLY ────────────────────────────────────────────────────────────────
-  {
-    id: 'tpl_monthly_classic', name: 'Monthly Overview', type: 'monthly',
-    description: 'Full calendar page with monthly goals and habit tracker.',
-    thumbnail: '', category: 'Monthly', tags: ['calendar', 'monthly', 'overview'],
-    pages: PLANNER_TYPE_PAGES.monthly(), isFavorite: false, isPremium: false, downloads: 6102,
-    accentHue: '215', config: cfg({ primaryColor: '#0C2340', accentColor: '#B8D4E8' }),
-  },
-  {
-    id: 'tpl_monthly_gold', name: 'Gold Monthly', type: 'monthly',
-    description: 'Warm gold and amber monthly calendar with rich typographic style.',
-    thumbnail: '', category: 'Monthly', tags: ['gold', 'warm', 'premium'],
-    pages: PLANNER_TYPE_PAGES.monthly(), isFavorite: false, isPremium: true, downloads: 2341,
-    accentHue: '43', config: cfg({ primaryColor: '#3D1A08', secondaryColor: '#A07840', accentColor: '#E8D5B4' }),
-  },
+  { id:'tpl_monthly_classic', name:'Monthly Overview', type:'monthly', description:'Full calendar page with monthly goals and habit tracker.', thumbnail:'', category:'Monthly', tags:['calendar','monthly','overview'], pages:PLANNER_TYPE_PAGES.monthly(), isFavorite:false, isPremium:false, isBestseller:true, downloads:6102, accentHue:'215', themeId:'minimalist', config:cfg({ primaryColor:'#0C2340', accentColor:'#B8D4E8' }) },
+  { id:'tpl_monthly_gold', name:'Gold Monthly', type:'monthly', description:'Warm gold and amber monthly calendar with rich typographic style.', thumbnail:'', category:'Monthly', tags:['gold','warm','premium'], pages:PLANNER_TYPE_PAGES.monthly(), isFavorite:false, isPremium:true, downloads:2341, accentHue:'43', themeId:'royal', config:cfg({ primaryColor:'#3D1A08', secondaryColor:'#A07840', accentColor:'#E8D5B4' }) },
+  { id:'tpl_monthly_nature', name:'Nature Monthly', type:'monthly', description:'Fresh green monthly calendar with nature-inspired accents.', thumbnail:'', category:'Monthly', tags:['nature','green','monthly'], pages:PLANNER_TYPE_PAGES.monthly(), isFavorite:false, isPremium:false, downloads:1890, accentHue:'150', themeId:'nature', config:cfg({ primaryColor:'#1B4332', accentColor:'#52B788' }) },
+  { id:'tpl_monthly_goal', name:'Goal Monthly', type:'monthly', description:'Monthly goal setting with 90-day vision and progress tracking.', thumbnail:'', category:'Monthly', tags:['goals','planning','monthly'], pages:PLANNER_TYPE_PAGES.monthly(), isFavorite:false, isPremium:true, isTrending:true, downloads:4120, accentHue:'215', themeId:'productivity', config:cfg({ primaryColor:'#1565C0', accentColor:'#2196F3' }) },
 
   // ── HABIT ──────────────────────────────────────────────────────────────────
-  {
-    id: 'tpl_habit_grid', name: 'Habit Grid', type: 'habit',
-    description: 'Track up to 12 habits with a visual monthly grid and progress bar.',
-    thumbnail: '', category: 'Tracker', tags: ['habits', 'grid', 'streak'],
-    pages: PLANNER_TYPE_PAGES.habit(), isFavorite: false, isPremium: false, downloads: 7501,
-    accentHue: '262', config: cfg({ primaryColor: '#2D1B69', secondaryColor: '#6B5B95', accentColor: '#D4C5F9' }),
-  },
-  {
-    id: 'tpl_habit_sage', name: 'Botanical Habits', type: 'habit',
-    description: 'Calming sage-toned habit tracker with monthly reflection section.',
-    thumbnail: '', category: 'Tracker', tags: ['sage', 'botanical', 'calm'],
-    pages: PLANNER_TYPE_PAGES.habit(), isFavorite: false, isPremium: false, downloads: 2189,
-    accentHue: '150', config: cfg({ primaryColor: '#1A3A2A', secondaryColor: '#52796F', accentColor: '#CAD2C5' }),
-  },
+  { id:'tpl_habit_grid', name:'Habit Grid', type:'habit', description:'Classic 31-day habit tracking grid with monthly overview.', thumbnail:'', category:'Wellness', tags:['habits','tracking','monthly'], pages:PLANNER_TYPE_PAGES.habit(), isFavorite:false, isPremium:false, isBestseller:true, downloads:8901, accentHue:'270', themeId:'nature', config:cfg({ primaryColor:'#1B4332', accentColor:'#52B788' }) },
+  { id:'tpl_habit_wellness', name:'Wellness Habits', type:'habit', description:'Holistic habit tracker with wellness, fitness, and mindset categories.', thumbnail:'', category:'Wellness', tags:['wellness','habits','holistic'], pages:PLANNER_TYPE_PAGES.habit(), isFavorite:false, isPremium:true, downloads:3450, accentHue:'330', themeId:'pastelDreams', config:cfg({ primaryColor:'#6A1B9A', accentColor:'#CE93D8' }) },
+  { id:'tpl_habit_minimal', name:'Minimal Habits', type:'habit', description:'Clean, no-fuss habit tracker for serious practitioners.', thumbnail:'', category:'Wellness', tags:['minimal','habits','clean'], pages:PLANNER_TYPE_PAGES.habit(), isFavorite:false, isPremium:false, downloads:2890, accentHue:'220', themeId:'minimalist', config:cfg({ primaryColor:'#0F172A', accentColor:'#E2E8F0' }) },
 
-  // ── BUDGET ─────────────────────────────────────────────────────────────────
-  {
-    id: 'tpl_budget_master', name: 'Budget Master', type: 'budget',
-    description: 'Complete monthly budget with income, expenses, and savings tracking.',
-    thumbnail: '', category: 'Finance', tags: ['budget', 'finance', 'savings'],
-    pages: PLANNER_TYPE_PAGES.budget(), isFavorite: false, isPremium: false, downloads: 8304,
-    accentHue: '145', config: cfg({ primaryColor: '#1A2E1A', secondaryColor: '#3D6B41', accentColor: '#B9D4BC' }),
-  },
-  {
-    id: 'tpl_budget_minimalist', name: 'Zero-Based Budget', type: 'budget',
-    description: 'Zero-based budgeting template for tracking every dollar.',
-    thumbnail: '', category: 'Finance', tags: ['zero-based', 'strict', 'finance'],
-    pages: PLANNER_TYPE_PAGES.budget(), isFavorite: false, isPremium: true, downloads: 3841,
-    accentHue: '220', config: cfg({ primaryColor: '#0F172A', accentColor: '#E2E8F0' }),
-  },
+  // ── BUDGET / FINANCE ───────────────────────────────────────────────────────
+  { id:'tpl_budget_master', name:'Budget Master', type:'budget', description:'Complete monthly budget planner with income, expenses, and savings.', thumbnail:'', category:'Finance', tags:['budget','finance','monthly'], pages:PLANNER_TYPE_PAGES.budget(), isFavorite:false, isPremium:false, isBestseller:true, downloads:5891, accentHue:'150', themeId:'nature', config:cfg({ primaryColor:'#1B4332', accentColor:'#52B788' }) },
+  { id:'tpl_budget_minimalist', name:'Budget Minimalist', type:'budget', description:'Simple, clean budget tracker for no-fuss money management.', thumbnail:'', category:'Finance', tags:['budget','minimal','clean'], pages:PLANNER_TYPE_PAGES.budget(), isFavorite:false, isPremium:false, downloads:3120, accentHue:'220', themeId:'minimalist', config:cfg({ primaryColor:'#0F172A', accentColor:'#E2E8F0' }) },
+  { id:'tpl_budget_savings52', name:'52-Week Savings', type:'finance', description:'52-week savings challenge with visual progress tracker.', thumbnail:'', category:'Finance', tags:['savings','challenge','52-week'], pages:PLANNER_TYPE_PAGES.budget(), isFavorite:false, isPremium:false, isTrending:true, isBestseller:true, downloads:7823, accentHue:'150', themeId:'nature', config:cfg({ primaryColor:'#1B4332', accentColor:'#74C69D' }) },
+  { id:'tpl_budget_debtsnow', name:'Debt Snowball', type:'finance', description:'Systematic debt payoff tracker with snowball method.', thumbnail:'', category:'Finance', tags:['debt','snowball','finance'], pages:PLANNER_TYPE_PAGES.budget(), isFavorite:false, isPremium:true, downloads:3450, accentHue:'215', themeId:'productivity', config:cfg({ primaryColor:'#1565C0', accentColor:'#2196F3' }) },
+  { id:'tpl_budget_bills', name:'Bill Tracker', type:'finance', description:'Monthly bill payment organizer with checkboxes and due dates.', thumbnail:'', category:'Finance', tags:['bills','tracker','payments'], pages:PLANNER_TYPE_PAGES.budget(), isFavorite:false, isPremium:false, downloads:3901, accentHue:'220', themeId:'minimalist', config:cfg({ primaryColor:'#0F172A', accentColor:'#334155' }) },
+  { id:'tpl_budget_nospend', name:'No-Spend Challenge', type:'finance', description:'30-day no-spend challenge tracker with daily check-ins.', thumbnail:'', category:'Finance', tags:['no-spend','challenge','savings'], pages:PLANNER_TYPE_PAGES.budget(), isFavorite:false, isPremium:false, downloads:2890, accentHue:'150', themeId:'cottagecore', config:cfg({ primaryColor:'#33691E', accentColor:'#8BC34A' }) },
+  { id:'tpl_budget_sinking', name:'Sinking Funds', type:'finance', description:'Multiple sinking fund tracker for planned irregular expenses.', thumbnail:'', category:'Finance', tags:['sinking-funds','savings','planning'], pages:PLANNER_TYPE_PAGES.budget(), isFavorite:false, isPremium:true, downloads:2341, accentHue:'43', themeId:'royal', config:cfg({ primaryColor:'#1A237E', accentColor:'#C9A227' }) },
 
   // ── WELLNESS ────────────────────────────────────────────────────────────────
-  {
-    id: 'tpl_wellness_daily', name: 'Wellness Daily', type: 'wellness',
-    description: 'Holistic daily wellness — mood, water, sleep, meals, and gratitude.',
-    thumbnail: '', category: 'Wellness', tags: ['wellness', 'health', 'mood'],
-    pages: PLANNER_TYPE_PAGES.wellness(), isFavorite: false, isPremium: false, downloads: 4987,
-    accentHue: '330', config: cfg({ primaryColor: '#4A1942', secondaryColor: '#C0695C', accentColor: '#F5D0CA' }),
-  },
-  {
-    id: 'tpl_wellness_teal', name: 'Calm & Clear', type: 'wellness',
-    description: 'Teal-toned wellness tracker with mindfulness and self-care focus.',
-    thumbnail: '', category: 'Wellness', tags: ['teal', 'mindfulness', 'calm'],
-    pages: PLANNER_TYPE_PAGES.wellness(), isFavorite: false, isPremium: false, downloads: 2140,
-    accentHue: '175', config: cfg({ primaryColor: '#042F2E', secondaryColor: '#0D9488', accentColor: '#99F6E4' }),
-  },
+  { id:'tpl_wellness_daily', name:'Wellness Daily', type:'wellness', description:'Holistic daily wellness planner for mind, body, and spirit.', thumbnail:'', category:'Wellness', tags:['wellness','holistic','daily'], pages:PLANNER_TYPE_PAGES.wellness(), isFavorite:false, isPremium:true, downloads:3450, accentHue:'330', themeId:'floral', config:cfg({ primaryColor:'#6B2737', accentColor:'#F06292' }) },
+  { id:'tpl_wellness_gratitude', name:'Gratitude Journal', type:'journal', description:'Daily gratitude practice with deep reflection prompts.', thumbnail:'', category:'Wellness', tags:['gratitude','journal','mindfulness'], pages:PLANNER_TYPE_PAGES.wellness(), isFavorite:false, isPremium:false, isBestseller:true, downloads:6780, accentHue:'330', themeId:'floral', config:cfg({ primaryColor:'#6B2737', accentColor:'#F06292' }) },
+  { id:'tpl_wellness_mood', name:'Mood Journal', type:'wellness', description:'Daily mood tracking with reflection and pattern insights.', thumbnail:'', category:'Wellness', tags:['mood','journal','mental-health'], pages:PLANNER_TYPE_PAGES.wellness(), isFavorite:false, isPremium:false, isTrending:true, downloads:4320, accentHue:'270', themeId:'pastelDreams', config:cfg({ primaryColor:'#6A1B9A', accentColor:'#CE93D8' }) },
+  { id:'tpl_wellness_selfcare', name:'Self-Care Planner', type:'wellness', description:'Comprehensive self-care system with weekly rituals and goals.', thumbnail:'', category:'Wellness', tags:['self-care','wellness','rituals'], pages:PLANNER_TYPE_PAGES.wellness(), isFavorite:false, isPremium:true, downloads:3120, accentHue:'330', themeId:'valentine', config:cfg({ primaryColor:'#880E4F', accentColor:'#FF4081' }) },
+  { id:'tpl_wellness_therapy', name:'Therapy Journal', type:'journal', description:'Structured journal for therapy prep, session notes, and insights.', thumbnail:'', category:'Wellness', tags:['therapy','journal','mental-health'], pages:PLANNER_TYPE_PAGES.wellness(), isFavorite:false, isPremium:true, downloads:2980, accentHue:'270', themeId:'pastelDreams', config:cfg({ primaryColor:'#6A1B9A', accentColor:'#CE93D8' }) },
 
-  // ── FITNESS ────────────────────────────────────────────────────────────────
-  {
-    id: 'tpl_fitness_log', name: 'Workout Log', type: 'fitness',
-    description: 'Log exercises, sets, reps, and personal records with clean formatting.',
-    thumbnail: '', category: 'Fitness', tags: ['fitness', 'workout', 'gym'],
-    pages: PLANNER_TYPE_PAGES.fitness(), isFavorite: false, isPremium: false, downloads: 3671,
-    accentHue: '220', config: cfg({ primaryColor: '#0D0D0D', accentColor: '#D4D4D4' }),
-  },
-  {
-    id: 'tpl_fitness_running', name: 'Running Log', type: 'fitness',
-    description: 'Dedicated running tracker with mileage, pace, and route notes.',
-    thumbnail: '', category: 'Fitness', tags: ['running', 'cardio', 'mileage'],
-    pages: PLANNER_TYPE_PAGES.fitness(), isFavorite: false, isPremium: false, downloads: 1823,
-    accentHue: '12', config: cfg({ primaryColor: '#7C2D12', secondaryColor: '#C2410C', accentColor: '#FED7AA' }),
-  },
+  // ── FITNESS ─────────────────────────────────────────────────────────────────
+  { id:'tpl_fitness_log', name:'Workout Log', type:'fitness', description:'Comprehensive workout logging with sets, reps, and progress tracking.', thumbnail:'', category:'Fitness', tags:['workout','fitness','log'], pages:PLANNER_TYPE_PAGES.fitness(), isFavorite:false, isPremium:false, isBestseller:true, downloads:5670, accentHue:'0', themeId:'productivity', config:cfg({ primaryColor:'#1565C0', accentColor:'#2196F3' }) },
+  { id:'tpl_fitness_meal', name:'Meal Planner', type:'fitness', description:'Weekly meal planning with nutrition notes and grocery list.', thumbnail:'', category:'Fitness', tags:['meal','nutrition','weekly'], pages:PLANNER_TYPE_PAGES.fitness(), isFavorite:false, isPremium:false, isBestseller:true, downloads:7234, accentHue:'90', themeId:'cottagecore', config:cfg({ primaryColor:'#33691E', accentColor:'#8BC34A' }) },
+  { id:'tpl_fitness_weight', name:'Weight Tracker', type:'fitness', description:'Weekly weigh-in tracker with goal visualization.', thumbnail:'', category:'Fitness', tags:['weight','tracker','fitness'], pages:PLANNER_TYPE_PAGES.fitness(), isFavorite:false, isPremium:false, downloads:4890, accentHue:'220', themeId:'minimalist', config:cfg({ primaryColor:'#0F172A', accentColor:'#E2E8F0' }) },
+  { id:'tpl_fitness_water', name:'Water Tracker', type:'fitness', description:'Daily hydration tracking with 8-glass goal system.', thumbnail:'', category:'Fitness', tags:['water','hydration','health'], pages:PLANNER_TYPE_PAGES.fitness(), isFavorite:false, isPremium:false, downloads:3456, accentHue:'200', themeId:'tropical', config:cfg({ primaryColor:'#004D40', accentColor:'#FFD54F' }) },
 
-  // ── STUDENT ────────────────────────────────────────────────────────────────
-  {
-    id: 'tpl_student_success', name: 'Student Success', type: 'student',
-    description: 'Academic daily planner with class schedule, assignments, and study goals.',
-    thumbnail: '', category: 'Academic', tags: ['student', 'school', 'academic'],
-    pages: PLANNER_TYPE_PAGES.student(), isFavorite: false, isPremium: false, downloads: 6456,
-    accentHue: '33', config: cfg({ primaryColor: '#3D1A08', secondaryColor: '#A07840', accentColor: '#F2C49B' }),
-  },
-  {
-    id: 'tpl_student_exam', name: 'Exam Study Plan', type: 'student',
-    description: 'Focused exam preparation planner with countdown and topic tracker.',
-    thumbnail: '', category: 'Academic', tags: ['exam', 'study', 'revision'],
-    pages: PLANNER_TYPE_PAGES.student(), isFavorite: false, isPremium: false, downloads: 3102,
-    accentHue: '245', config: cfg({ primaryColor: '#1E1B4B', secondaryColor: '#4338CA', accentColor: '#C7D2FE' }),
-  },
-  {
-    id: 'tpl_student_semester', name: 'Semester Planner', type: 'student',
-    description: 'Full semester overview with weekly spreads and grade tracking.',
-    thumbnail: '', category: 'Academic', tags: ['semester', 'university', 'schedule'],
-    pages: PLANNER_TYPE_PAGES.student(), isFavorite: false, isPremium: true, downloads: 4201,
-    accentHue: '175', config: cfg({ primaryColor: '#042F2E', secondaryColor: '#0D9488', accentColor: '#99F6E4' }),
-  },
+  // ── STUDENT ─────────────────────────────────────────────────────────────────
+  { id:'tpl_student_success', name:'Study Success', type:'student', description:'Complete student planner with assignments, exams, and study sessions.', thumbnail:'', category:'Student', tags:['student','study','academic'], pages:PLANNER_TYPE_PAGES.student(), isFavorite:false, isPremium:false, isBestseller:true, downloads:6780, accentHue:'215', themeId:'productivity', config:cfg({ primaryColor:'#1565C0', accentColor:'#2196F3' }) },
+  { id:'tpl_student_cornell', name:'Cornell Notes', type:'student', description:'Classic Cornell note-taking system for structured learning.', thumbnail:'', category:'Student', tags:['notes','cornell','study'], pages:PLANNER_TYPE_PAGES.student(), isFavorite:false, isPremium:false, isBestseller:true, downloads:8901, accentHue:'220', themeId:'minimalist', config:cfg({ primaryColor:'#0F172A', accentColor:'#E2E8F0' }) },
+  { id:'tpl_student_exam', name:'Exam Revision', type:'student', description:'Structured exam revision planner with countdown and topic tracker.', thumbnail:'', category:'Student', tags:['exam','revision','study'], pages:PLANNER_TYPE_PAGES.student(), isFavorite:false, isPremium:true, isTrending:true, downloads:4230, accentHue:'215', themeId:'productivity', config:cfg({ primaryColor:'#1565C0', accentColor:'#2196F3' }) },
+  { id:'tpl_student_semester', name:'Semester Planner', type:'student', description:'Full semester overview with monthly breakdowns and deadlines.', thumbnail:'', category:'Student', tags:['semester','academic','planning'], pages:PLANNER_TYPE_PAGES.student(), isFavorite:false, isPremium:true, downloads:4120, accentHue:'210', themeId:'darkAcademia', config:cfg({ primaryColor:'#2C1810', accentColor:'#8D6E63' }) },
+  { id:'tpl_student_reading', name:'Reading Log', type:'student', description:'Book reading tracker with notes, quotes, and ratings.', thumbnail:'', category:'Student', tags:['reading','books','tracker'], pages:PLANNER_TYPE_PAGES.student(), isFavorite:false, isPremium:false, downloads:3456, accentHue:'210', themeId:'darkAcademia', config:cfg({ primaryColor:'#2C1810', accentColor:'#8D6E63' }) },
 
-  // ── BUSINESS ────────────────────────────────────────────────────────────────
-  {
-    id: 'tpl_business_pro', name: 'Business Pro', type: 'business',
-    description: 'Professional daily planner with priority matrix and project tracking.',
-    thumbnail: '', category: 'Business', tags: ['business', 'professional', 'projects'],
-    pages: PLANNER_TYPE_PAGES.business(), isFavorite: false, isPremium: true, downloads: 9231,
-    accentHue: '220', config: cfg({ primaryColor: '#0F172A', accentColor: '#E2E8F0' }),
-  },
-  {
-    id: 'tpl_business_startup', name: 'Startup Planner', type: 'business',
-    description: 'Fast-paced startup planner with OKRs, sprint goals, and meetings.',
-    thumbnail: '', category: 'Business', tags: ['startup', 'okr', 'agile'],
-    pages: PLANNER_TYPE_PAGES.business(), isFavorite: false, isPremium: true, downloads: 4102,
-    accentHue: '262', config: cfg({ primaryColor: '#2D1B69', secondaryColor: '#6366F1', accentColor: '#C7D2FE' }),
-  },
-  {
-    id: 'tpl_business_freelance', name: 'Freelance Planner', type: 'business',
-    description: 'Client tracking, project management, and invoice log for freelancers.',
-    thumbnail: '', category: 'Business', tags: ['freelance', 'client', 'invoice'],
-    pages: PLANNER_TYPE_PAGES.business(), isFavorite: false, isPremium: false, downloads: 5820,
-    accentHue: '43', config: cfg({ primaryColor: '#451A03', secondaryColor: '#B45309', accentColor: '#FDE68A' }),
-  },
+  // ── TEACHER ─────────────────────────────────────────────────────────────────
+  { id:'tpl_teacher_lesson', name:'Lesson Planner', type:'teacher', description:'Weekly lesson planning with objectives, activities, and assessment.', thumbnail:'', category:'Teacher', tags:['teacher','lesson','classroom'], pages:PLANNER_TYPE_PAGES.student(), isFavorite:false, isPremium:true, isBestseller:true, downloads:4560, accentHue:'215', themeId:'productivity', config:cfg({ primaryColor:'#1565C0', accentColor:'#2196F3' }) },
+  { id:'tpl_teacher_gradebook', name:'Grade Book', type:'teacher', description:'Student grade tracking and management with averages.', thumbnail:'', category:'Teacher', tags:['grades','teacher','tracking'], pages:PLANNER_TYPE_PAGES.student(), isFavorite:false, isPremium:true, downloads:3210, accentHue:'220', themeId:'minimalist', config:cfg({ primaryColor:'#0F172A', accentColor:'#E2E8F0' }) },
+  { id:'tpl_teacher_classroom', name:'Classroom Planner', type:'teacher', description:'Complete classroom organization planner for the academic year.', thumbnail:'', category:'Teacher', tags:['classroom','teacher','organize'], pages:PLANNER_TYPE_PAGES.student(), isFavorite:false, isPremium:true, downloads:2890, accentHue:'150', themeId:'cottagecore', config:cfg({ primaryColor:'#33691E', accentColor:'#8BC34A' }) },
 
-  // ── JOURNAL ────────────────────────────────────────────────────────────────
-  {
-    id: 'tpl_journal_morning', name: 'Morning Pages', type: 'journal',
-    description: 'Daily morning journaling with brain dump and intention setting.',
-    thumbnail: '', category: 'Journal', tags: ['morning', 'journaling', 'mindfulness'],
-    pages: PLANNER_TYPE_PAGES.journal(), isFavorite: false, isPremium: false, downloads: 3891,
-    accentHue: '33', config: cfg({ primaryColor: '#451A03', secondaryColor: '#B45309', accentColor: '#FDE68A' }),
-  },
-  {
-    id: 'tpl_journal_gratitude', name: 'Gratitude Journal', type: 'journal',
-    description: 'Dedicated gratitude practice journal with daily and weekly prompts.',
-    thumbnail: '', category: 'Journal', tags: ['gratitude', 'positivity', 'mindfulness'],
-    pages: PLANNER_TYPE_PAGES.journal(), isFavorite: false, isPremium: false, downloads: 5102,
-    accentHue: '330', config: cfg({ primaryColor: '#4A1942', secondaryColor: '#9D174D', accentColor: '#FBCFE8' }),
-  },
-  {
-    id: 'tpl_journal_5year', name: '5-Year Journal', type: 'journal',
-    description: 'Reflect, set goals, and track your journey across 5 years.',
-    thumbnail: '', category: 'Journal', tags: ['long-term', 'reflection', '5-year'],
-    pages: PLANNER_TYPE_PAGES.journal(), isFavorite: false, isPremium: true, downloads: 2341,
-    accentHue: '262', config: cfg({ primaryColor: '#2D1B69', secondaryColor: '#6B5B95', accentColor: '#D4C5F9' }),
-  },
+  // ── BUSINESS ───────────────────────────────────────────────────────────────
+  { id:'tpl_business_pro', name:'Business Pro', type:'business', description:'Executive business planner with KPIs, meetings, and project tracking.', thumbnail:'', category:'Business', tags:['business','executive','kpi'], pages:PLANNER_TYPE_PAGES.business(), isFavorite:false, isPremium:true, isBestseller:true, downloads:5670, accentHue:'220', themeId:'minimalist', config:cfg({ primaryColor:'#0F172A', accentColor:'#334155' }) },
+  { id:'tpl_business_content', name:'Content Planner', type:'business', description:'90-day content marketing calendar with platform strategy.', thumbnail:'', category:'Business', tags:['content','marketing','social'], pages:PLANNER_TYPE_PAGES.business(), isFavorite:false, isPremium:true, isTrending:true, downloads:5670, accentHue:'270', themeId:'pastelDreams', config:cfg({ primaryColor:'#6A1B9A', accentColor:'#CE93D8' }) },
+  { id:'tpl_business_social', name:'Social Media Planner', type:'business', description:'Cross-platform social media content calendar and analytics.', thumbnail:'', category:'Business', tags:['social-media','content','marketing'], pages:PLANNER_TYPE_PAGES.business(), isFavorite:false, isPremium:true, downloads:4890, accentHue:'215', themeId:'productivity', config:cfg({ primaryColor:'#1565C0', accentColor:'#2196F3' }) },
+  { id:'tpl_business_freelance', name:'Freelance Tracker', type:'business', description:'Client management, invoicing, and project tracking for freelancers.', thumbnail:'', category:'Business', tags:['freelance','clients','invoicing'], pages:PLANNER_TYPE_PAGES.business(), isFavorite:false, isPremium:true, downloads:3890, accentHue:'43', themeId:'royal', config:cfg({ primaryColor:'#1A237E', accentColor:'#C9A227' }) },
+  { id:'tpl_business_meetings', name:'Meeting Notes', type:'business', description:'Professional meeting notes template with agenda and action items.', thumbnail:'', category:'Business', tags:['meetings','notes','actions'], pages:PLANNER_TYPE_PAGES.business(), isFavorite:false, isPremium:false, downloads:4120, accentHue:'220', themeId:'minimalist', config:cfg({ primaryColor:'#0F172A', accentColor:'#E2E8F0' }) },
+
+  // ── KIDS ────────────────────────────────────────────────────────────────────
+  { id:'tpl_kids_chore', name:'Chore Chart', type:'kids', description:'Fun and colorful weekly chore chart with reward system.', thumbnail:'', category:'Kids', tags:['kids','chores','rewards'], pages:PLANNER_TYPE_PAGES.daily(), isFavorite:false, isPremium:false, isBestseller:true, downloads:5670, accentHue:'330', themeId:'kawaii', config:cfg({ primaryColor:'#AD1457', accentColor:'#FF80AB' }) },
+  { id:'tpl_kids_reward', name:'Reward Chart', type:'kids', description:'Star reward chart for kids with weekly tracking.', thumbnail:'', category:'Kids', tags:['kids','rewards','stars'], pages:PLANNER_TYPE_PAGES.daily(), isFavorite:false, isPremium:false, isBestseller:true, downloads:6780, accentHue:'330', themeId:'kawaii', config:cfg({ primaryColor:'#AD1457', accentColor:'#FF80AB' }) },
+  { id:'tpl_kids_reading', name:'Kids Reading Log', type:'kids', description:'Colorful reading log designed for young readers.', thumbnail:'', category:'Kids', tags:['kids','reading','books'], pages:PLANNER_TYPE_PAGES.daily(), isFavorite:false, isPremium:false, downloads:4321, accentHue:'200', themeId:'kawaii', config:cfg({ primaryColor:'#AD1457', accentColor:'#FF80AB' }) },
+  { id:'tpl_kids_routine', name:'Daily Routine', type:'kids', description:'Morning and evening routine chart with pictures and times.', thumbnail:'', category:'Kids', tags:['kids','routine','daily'], pages:PLANNER_TYPE_PAGES.daily(), isFavorite:false, isPremium:false, downloads:3890, accentHue:'200', themeId:'kawaii', config:cfg({ primaryColor:'#AD1457', accentColor:'#FF80AB' }) },
+
+  // ── WEDDING ─────────────────────────────────────────────────────────────────
+  { id:'tpl_wedding_master', name:'Wedding Planner', type:'wedding', description:'Complete wedding day planning system from engagement to honeymoon.', thumbnail:'', category:'Wedding', tags:['wedding','planning','bride'], pages:PLANNER_TYPE_PAGES.monthly(), isFavorite:false, isPremium:true, isBestseller:true, downloads:8901, accentHue:'330', themeId:'floral', config:cfg({ primaryColor:'#6B2737', accentColor:'#F06292' }) },
+  { id:'tpl_wedding_budget', name:'Wedding Budget', type:'wedding', description:'Comprehensive wedding budget tracker by category with vendors.', thumbnail:'', category:'Wedding', tags:['wedding','budget','vendors'], pages:PLANNER_TYPE_PAGES.budget(), isFavorite:false, isPremium:true, downloads:4560, accentHue:'43', themeId:'royal', config:cfg({ primaryColor:'#1A237E', accentColor:'#C9A227' }) },
+  { id:'tpl_wedding_guests', name:'Guest List Manager', type:'wedding', description:'RSVP tracking, seating chart, and meal preference management.', thumbnail:'', category:'Wedding', tags:['wedding','guests','rsvp'], pages:PLANNER_TYPE_PAGES.monthly(), isFavorite:false, isPremium:false, downloads:5670, accentHue:'330', themeId:'floral', config:cfg({ primaryColor:'#6B2737', accentColor:'#F06292' }) },
+  { id:'tpl_wedding_vendors', name:'Vendor Tracker', type:'wedding', description:'Vendor contacts, contracts, payments, and timeline.', thumbnail:'', category:'Wedding', tags:['wedding','vendors','contracts'], pages:PLANNER_TYPE_PAGES.monthly(), isFavorite:false, isPremium:true, downloads:3450, accentHue:'330', themeId:'floral', config:cfg({ primaryColor:'#6B2737', accentColor:'#F06292' }) },
+
+  // ── JOURNALS ────────────────────────────────────────────────────────────────
+  { id:'tpl_journal_morning', name:'Morning Pages', type:'journal', description:'Free-flow morning journaling for clarity and creativity.', thumbnail:'', category:'Journal', tags:['morning','journal','writing'], pages:PLANNER_TYPE_PAGES.journal(), isFavorite:false, isPremium:false, downloads:4560, accentHue:'35', themeId:'boho', config:cfg({ primaryColor:'#5C4033', accentColor:'#D4A26A' }) },
+  { id:'tpl_journal_5year', name:'5-Year Journal', type:'journal', description:'One-line-per-day journal for five years of reflections.', thumbnail:'', category:'Journal', tags:['journal','5-year','reflection'], pages:PLANNER_TYPE_PAGES.journal(), isFavorite:false, isPremium:true, downloads:3210, accentHue:'210', themeId:'darkAcademia', config:cfg({ primaryColor:'#2C1810', accentColor:'#8D6E63' }) },
+  { id:'tpl_journal_manifestation', name:'Manifestation Journal', type:'journal', description:'Law of attraction journaling with affirmations and vision work.', thumbnail:'', category:'Journal', tags:['manifestation','law-of-attraction','affirmations'], pages:PLANNER_TYPE_PAGES.journal(), isFavorite:false, isPremium:true, isTrending:true, downloads:7890, accentHue:'270', themeId:'galaxy', config:cfg({ primaryColor:'#E8D5FF', accentColor:'#7C4DFF' }) },
+  { id:'tpl_journal_travel', name:'Travel Journal', type:'journal', description:'Document your adventures with maps, memories, and mementos.', thumbnail:'', category:'Journal', tags:['travel','adventure','memories'], pages:PLANNER_TYPE_PAGES.journal(), isFavorite:false, isPremium:true, downloads:5670, accentHue:'200', themeId:'tropical', config:cfg({ primaryColor:'#004D40', accentColor:'#FFD54F' }) },
+  { id:'tpl_journal_pregnancy', name:'Pregnancy Journal', type:'journal', description:'Week-by-week pregnancy journey with milestones and memories.', thumbnail:'', category:'Journal', tags:['pregnancy','baby','journal'], pages:PLANNER_TYPE_PAGES.journal(), isFavorite:false, isPremium:true, downloads:4560, accentHue:'330', themeId:'pastelDreams', config:cfg({ primaryColor:'#6A1B9A', accentColor:'#CE93D8' }) },
+  { id:'tpl_journal_recipe', name:'Recipe Journal', type:'journal', description:'Personal recipe collection with notes and memory prompts.', thumbnail:'', category:'Journal', tags:['recipes','food','journal'], pages:PLANNER_TYPE_PAGES.journal(), isFavorite:false, isPremium:false, downloads:3456, accentHue:'35', themeId:'cottagecore', config:cfg({ primaryColor:'#33691E', accentColor:'#8BC34A' }) },
+
+  // ── ADHD ────────────────────────────────────────────────────────────────────
+  { id:'tpl_adhd_brain', name:'ADHD Brain Dump', type:'adhd', description:'Structured brain dump for ADHD minds with capture and sort system.', thumbnail:'', category:'ADHD', tags:['adhd','brain-dump','capture'], pages:PLANNER_TYPE_PAGES.daily(), isFavorite:false, isPremium:false, downloads:3210, accentHue:'290', themeId:'kawaii', config:cfg({ primaryColor:'#AD1457', accentColor:'#FF80AB' }) },
+  { id:'tpl_adhd_routine', name:'ADHD Routine Tracker', type:'adhd', description:'Visual morning and evening routine builder for ADHD brains.', thumbnail:'', category:'ADHD', tags:['adhd','routine','visual'], pages:PLANNER_TYPE_PAGES.daily(), isFavorite:false, isPremium:false, downloads:2890, accentHue:'290', themeId:'kawaii', config:cfg({ primaryColor:'#AD1457', accentColor:'#FF80AB' }) },
+  { id:'tpl_adhd_reward', name:'ADHD Reward System', type:'adhd', description:'Gamified reward system for completing daily tasks and habits.', thumbnail:'', category:'ADHD', tags:['adhd','rewards','gamification'], pages:PLANNER_TYPE_PAGES.daily(), isFavorite:false, isPremium:false, downloads:1980, accentHue:'290', themeId:'kawaii', config:cfg({ primaryColor:'#AD1457', accentColor:'#FF80AB' }) },
+  { id:'tpl_adhd_eisenhower', name:'ADHD Focus Matrix', type:'adhd', description:'Eisenhower matrix adapted for ADHD task prioritization.', thumbnail:'', category:'ADHD', tags:['adhd','focus','priority'], pages:PLANNER_TYPE_PAGES.daily(), isFavorite:false, isPremium:true, isTrending:true, downloads:2450, accentHue:'270', themeId:'pastelDreams', config:cfg({ primaryColor:'#6A1B9A', accentColor:'#CE93D8' }) },
 
   // ── CREATIVE ────────────────────────────────────────────────────────────────
-  {
-    id: 'tpl_creative_content', name: 'Content Calendar', type: 'creative',
-    description: 'Social media content planning with platform tracking and post ideas.',
-    thumbnail: '', category: 'Creative', tags: ['content', 'social media', 'calendar'],
-    pages: [
-      makePage('Content Calendar', 0, [
-        makeBlock('date-header', 'Month', 0, { showMonth: true, showYear: true }),
-        makeBlock('social-calendar', 'Publishing Calendar', 1, { rows: 14 }),
-        makeBlock('kanban', 'Content Pipeline', 2, { columns: ['Ideas', 'Draft', 'Design', 'Posted'], itemsPerColumn: 3 }),
-        makeBlock('etsy-listing', 'Offer Notes', 3, { rows: 4 }),
-      ]),
-    ], isFavorite: false, isPremium: false, downloads: 4502,
-    accentHue: '262', config: cfg({ primaryColor: '#2D1B69', secondaryColor: '#6366F1', accentColor: '#C7D2FE' }),
-  },
-  {
-    id: 'tpl_creative_design', name: 'Design Sprint', type: 'creative',
-    description: 'Product design sprint planner with research, ideation, and testing phases.',
-    thumbnail: '', category: 'Creative', tags: ['design', 'sprint', 'ux'],
-    pages: PLANNER_TYPE_PAGES.creative(), isFavorite: false, isPremium: true, downloads: 2102,
-    accentHue: '175', config: cfg({ primaryColor: '#042F2E', secondaryColor: '#0D9488', accentColor: '#99F6E4' }),
-  },
-  {
-    id: 'tpl_creative_story', name: 'Story Planner', type: 'creative',
-    description: 'Novel and story planning with character sheets, plot arcs, and chapter outlines.',
-    thumbnail: '', category: 'Creative', tags: ['writing', 'novel', 'story'],
-    pages: PLANNER_TYPE_PAGES.creative(), isFavorite: false, isPremium: false, downloads: 3241,
-    accentHue: '33', config: cfg({ primaryColor: '#3D1A08', secondaryColor: '#A07840', accentColor: '#E8D5B4' }),
-  },
-
-  // ── LIFE PLANNING ───────────────────────────────────────────────────────────
-  {
-    id: 'tpl_life_yearreview', name: 'Year in Review', type: 'journal',
-    description: 'Annual reflection and goal-setting for the year ahead.',
-    thumbnail: '', category: 'Life', tags: ['year', 'review', 'goals', 'reflection'],
-    pages: PLANNER_TYPE_PAGES.journal(), isFavorite: false, isPremium: false, downloads: 6891,
-    accentHue: '220', config: cfg({ primaryColor: '#0F172A', accentColor: '#E2E8F0' }),
-  },
-  {
-    id: 'tpl_life_quarter', name: 'Quarter Goals', type: 'business',
-    description: 'OKR-style quarterly goal setting with weekly milestones.',
-    thumbnail: '', category: 'Life', tags: ['quarter', 'goals', 'okr'],
-    pages: PLANNER_TYPE_PAGES.business(), isFavorite: false, isPremium: false, downloads: 3510,
-    accentHue: '150', config: cfg({ primaryColor: '#1A2E1A', secondaryColor: '#3D6B41', accentColor: '#B9D4BC' }),
-  },
-  {
-    id: 'tpl_life_travel', name: 'Travel Planner', type: 'creative',
-    description: 'Trip planning with itinerary, packing list, and budget tracking.',
-    thumbnail: '', category: 'Life', tags: ['travel', 'itinerary', 'packing'],
-    pages: [
-      makePage('Trip Planner', 0, [
-        makeBlock('cover-title', 'Cover', 0, { title: 'Travel Planner', subtitle: 'Itinerary, budget, packing' }),
-        makeBlock('week-grid', 'Itinerary', 1, { showTimeSlots: false }),
-        makeBlock('checklist', 'Packing List', 2, { categories: ['Clothes', 'Documents', 'Toiletries'], itemsPerCategory: 6 }),
-        makeBlock('budget-row', 'Trip Budget', 3, { rows: 6 }),
-        makeBlock('notes', 'Reservation Notes', 4, { lines: 5 }),
-      ]),
-    ], isFavorite: false, isPremium: false, downloads: 7102,
-    accentHue: '215', config: cfg({ primaryColor: '#0C2340', secondaryColor: '#1B5E8C', accentColor: '#B8D4E8' }),
-  },
-
-  // ── ETSY-READY DIGITAL PRODUCTS ────────────────────────────────────────────
-  {
-    id: 'tpl_etsy_shop_launch', name: 'Etsy Shop Launch Kit', type: 'business',
-    description: 'Listing prep, SEO tags, launch checklist, and product workflow for digital sellers.',
-    thumbnail: '', category: 'Etsy', tags: ['etsy', 'seo', 'shop launch', 'digital product'],
-    pages: [
-      makePage('Shop Launch', 0, [
-        makeBlock('cover-title', 'Cover', 0, { title: 'Etsy Shop Launch Kit', subtitle: 'Plan, list, launch' }),
-        makeBlock('etsy-listing', 'Listing Prep', 1, { rows: 6 }),
-        makeBlock('checklist', 'Launch Checklist', 2, { categories: ['Before listing', 'Publishing', 'After launch'], itemsPerCategory: 5 }),
-        makeBlock('social-calendar', 'Promo Calendar', 3, { rows: 10 }),
-      ]),
-    ], isFavorite: false, isPremium: true, downloads: 8120,
-    accentHue: '262', config: cfg({ primaryColor: '#2D1B69', secondaryColor: '#6366F1', accentColor: '#C7D2FE' }),
-  },
-  {
-    id: 'tpl_etsy_content_seller', name: 'Digital Product Content Planner', type: 'creative',
-    description: 'A content calendar for creators selling planners, printables, stickers, and templates.',
-    thumbnail: '', category: 'Etsy', tags: ['content calendar', 'printables', 'creator', 'marketing'],
-    pages: [
-      makePage('Content Planner', 0, [
-        makeBlock('date-header', 'Month', 0, { showMonth: true, showYear: true }),
-        makeBlock('social-calendar', 'Content Calendar', 1, { rows: 14 }),
-        makeBlock('kanban', 'Content Pipeline', 2, { columns: ['Ideas', 'Design', 'Scheduled', 'Posted'], itemsPerColumn: 3 }),
-        makeBlock('goal-section', 'Launch Goals', 3, { count: 4 }),
-      ]),
-    ], isFavorite: false, isPremium: false, downloads: 6933,
-    accentHue: '330', config: cfg({ primaryColor: '#4A1942', secondaryColor: '#9D174D', accentColor: '#FBCFE8' }),
-  },
-  {
-    id: 'tpl_etsy_printable_bundle', name: 'Printable Bundle Builder', type: 'workbook',
-    description: 'Plan a sellable printable bundle with cover pages, inserts, bonuses, and mockup notes.',
-    thumbnail: '', category: 'Etsy', tags: ['printable bundle', 'mockups', 'planner inserts'],
-    pages: [
-      makePage('Bundle Plan', 0, [
-        makeBlock('cover-title', 'Cover', 0, { title: 'Printable Bundle', subtitle: 'Product planning workbook' }),
-        makeBlock('table-of-contents', 'Bundle Contents', 1, { entries: 8 }),
-        makeBlock('etsy-listing', 'Listing Assets', 2, { rows: 6 }),
-        makeBlock('vision-board', 'Mockup Ideas', 3, { slots: 6 }),
-      ]),
-    ], isFavorite: false, isPremium: true, downloads: 5402,
-    accentHue: '43', config: cfg({ primaryColor: '#451A03', secondaryColor: '#B45309', accentColor: '#FDE68A' }),
-  },
-
-  // ── HOME / FAMILY / LIFE ───────────────────────────────────────────────────
-  {
-    id: 'tpl_home_command_center', name: 'Home Command Center', type: 'weekly',
-    description: 'Weekly family dashboard with meals, cleaning zones, errands, and notes.',
-    thumbnail: '', category: 'Home', tags: ['family', 'home', 'cleaning', 'meals'],
-    pages: [
-      makePage('Home Week', 0, [
-        makeBlock('date-header', 'Week', 0, { showWeekNumber: true }),
-        makeBlock('week-grid', 'Weekly Overview', 1, { showTimeSlots: false }),
-        makeBlock('meal-plan-week', 'Meal Plan', 2),
-        makeBlock('cleaning-zone', 'Cleaning Zones', 3, { itemsPerRoom: 4 }),
-        makeBlock('todo-list', 'Errands', 4, { count: 8 }),
-      ]),
-    ], isFavorite: false, isPremium: false, downloads: 7710,
-    accentHue: '150', config: cfg({ primaryColor: '#1A3A2A', secondaryColor: '#52796F', accentColor: '#CAD2C5' }),
-  },
-  {
-    id: 'tpl_home_meal_prep', name: 'Meal Prep Planner', type: 'wellness',
-    description: 'Weekly meals, grocery planning, hydration, and nutrition notes.',
-    thumbnail: '', category: 'Home', tags: ['meal prep', 'grocery', 'wellness', 'family'],
-    pages: [
-      makePage('Meal Prep', 0, [
-        makeBlock('meal-plan-week', 'Weekly Meals', 0),
-        makeBlock('checklist', 'Grocery List', 1, { categories: ['Produce', 'Protein', 'Pantry'], itemsPerCategory: 6 }),
-        makeBlock('water-tracker', 'Hydration', 2, { goal: 8 }),
-        makeBlock('notes', 'Prep Notes', 3, { lines: 5 }),
-      ]),
-    ], isFavorite: false, isPremium: false, downloads: 6444,
-    accentHue: '175', config: cfg({ primaryColor: '#042F2E', secondaryColor: '#0D9488', accentColor: '#99F6E4' }),
-  },
-  {
-    id: 'tpl_life_password_keeper', name: 'Password Keeper', type: 'worksheet',
-    description: 'Printable account and password tracker with clean alphabetical rows.',
-    thumbnail: '', category: 'Life', tags: ['password', 'accounts', 'home binder'],
-    pages: [
-      makePage('Password Log', 0, [
-        makeBlock('cover-title', 'Cover', 0, { title: 'Password Keeper', subtitle: 'Account reference log' }),
-        makeBlock('password-log', 'Accounts', 1, { rows: 14 }),
-      ]),
-    ], isFavorite: false, isPremium: false, downloads: 5888,
-    accentHue: '220', config: cfg({ primaryColor: '#0F172A', secondaryColor: '#475569', accentColor: '#E2E8F0' }),
-  },
-  {
-    id: 'tpl_life_adhd_focus', name: 'ADHD Focus Planner', type: 'daily',
-    description: 'Low-friction daily focus page with brain dump, priority matrix, timers, and wins.',
-    thumbnail: '', category: 'Life', tags: ['adhd', 'focus', 'simple', 'productivity'],
-    pages: [
-      makePage('Focus Day', 0, [
-        makeBlock('date-header', 'Today', 0, { showDay: true, showDate: true }),
-        makeBlock('brain-dump', 'Brain Dump', 1, { lines: 8 }),
-        makeBlock('priority-matrix', 'Decision Matrix', 2),
-        makeBlock('focus-block', 'One Thing', 3, { prompt: 'One thing that matters:', lines: 4 }),
-        makeBlock('gratitude', 'Wins', 4, { count: 3 }),
-      ]),
-    ], isFavorite: false, isPremium: true, downloads: 7362,
-    accentHue: '215', config: cfg({ primaryColor: '#0C2340', secondaryColor: '#1B5E8C', accentColor: '#B8D4E8' }),
-  },
-  {
-    id: 'tpl_life_vision_goals', name: 'Vision & Goals Board', type: 'creative',
-    description: 'Vision board, quarterly goals, habits, and reflection pages for manifestation-style planners.',
-    thumbnail: '', category: 'Life', tags: ['vision board', 'goals', 'manifestation', 'reflection'],
-    pages: [
-      makePage('Vision Board', 0, [
-        makeBlock('cover-title', 'Cover', 0, { title: 'Vision & Goals', subtitle: 'Dream it, plan it, do it' }),
-        makeBlock('vision-board', 'Vision Board', 1, { slots: 9 }),
-        makeBlock('goal-section', 'Quarter Goals', 2, { count: 6 }),
-        makeBlock('habit-grid', 'Aligned Habits', 3, { habitCount: 6, daysInMonth: 31 }),
-      ]),
-    ], isFavorite: false, isPremium: false, downloads: 8455,
-    accentHue: '330', config: cfg({ primaryColor: '#4A1942', secondaryColor: '#C0695C', accentColor: '#F5D0CA' }),
-  },
-  {
-    id: 'tpl_business_client_project', name: 'Client Project Planner', type: 'business',
-    description: 'Freelancer-friendly client brief, milestone tracker, meeting notes, and delivery checklist.',
-    thumbnail: '', category: 'Business', tags: ['client', 'freelance', 'project', 'milestones'],
-    pages: [
-      makePage('Client Project', 0, [
-        makeBlock('cover-title', 'Cover', 0, { title: 'Client Project Planner', subtitle: 'Brief, milestones, delivery' }),
-        makeBlock('focus-block', 'Project Brief', 1, { prompt: 'Client goal and scope:', lines: 6 }),
-        makeBlock('project-tracker', 'Milestones', 2, { count: 5 }),
-        makeBlock('meeting-notes', 'Meeting Notes', 3, { attendeeCount: 4, actionItems: 6 }),
-        makeBlock('checklist', 'Delivery Checklist', 4, { categories: ['Draft', 'Review', 'Final'], itemsPerCategory: 4 }),
-      ]),
-    ], isFavorite: false, isPremium: true, downloads: 6230,
-    accentHue: '215', config: cfg({ primaryColor: '#0C2340', secondaryColor: '#1B5E8C', accentColor: '#B8D4E8' }),
-  },
-  {
-    id: 'tpl_teacher_lesson_week', name: 'Teacher Lesson Planner', type: 'student',
-    description: 'Weekly lesson plan with class schedule, objectives, resources, and assessment notes.',
-    thumbnail: '', category: 'Academic', tags: ['teacher', 'lesson plan', 'classroom', 'school'],
-    pages: [
-      makePage('Lesson Week', 0, [
-        makeBlock('date-header', 'Week', 0, { showWeekNumber: true }),
-        makeBlock('class-schedule', 'Class Schedule', 1, { periods: 7 }),
-        makeBlock('week-grid', 'Lesson Overview', 2, { showTimeSlots: false }),
-        makeBlock('goal-section', 'Learning Objectives', 3, { count: 5 }),
-        makeBlock('notes', 'Assessment Notes', 4, { lines: 6 }),
-      ]),
-    ], isFavorite: false, isPremium: false, downloads: 4920,
-    accentHue: '33', config: cfg({ primaryColor: '#3D1A08', secondaryColor: '#A07840', accentColor: '#F2C49B' }),
-  },
-  {
-    id: 'tpl_wedding_planner', name: 'Wedding Planner', type: 'creative',
-    description: 'Elegant printable wedding planner with timeline, budget, vendor contacts, and checklist.',
-    thumbnail: '', category: 'Life', tags: ['wedding', 'event', 'vendor', 'budget'],
-    pages: [
-      makePage('Wedding Plan', 0, [
-        makeBlock('cover-title', 'Cover', 0, { title: 'Wedding Planner', subtitle: 'Timeline, budget, vendors' }),
-        makeBlock('countdown', 'Wedding Countdown', 1, { label: 'Wedding Day' }),
-        makeBlock('budget-row', 'Wedding Budget', 2, { rows: 8 }),
-        makeBlock('contact-card', 'Vendor Contacts', 3, { rows: 4 }),
-        makeBlock('checklist', 'Planning Checklist', 4, { categories: ['Venue', 'Attire', 'Guests'], itemsPerCategory: 5 }),
-      ]),
-    ], isFavorite: false, isPremium: true, downloads: 7940,
-    accentHue: '345', config: cfg({ primaryColor: '#4A1942', secondaryColor: '#9D174D', accentColor: '#FBCFE8' }),
-  },
-  {
-    id: 'tpl_selfcare_reset', name: 'Self-Care Reset', type: 'wellness',
-    description: 'Gentle wellness reset with mood, sleep, hydration, gratitude, and weekly care actions.',
-    thumbnail: '', category: 'Wellness', tags: ['self care', 'mood', 'sleep', 'reset'],
-    pages: [
-      makePage('Self-Care Reset', 0, [
-        makeBlock('date-header', 'Today', 0, { showDay: true, showDate: true }),
-        makeBlock('mood-tracker', 'Mood Check', 1),
-        makeBlock('sleep-tracker', 'Sleep', 2),
-        makeBlock('water-tracker', 'Hydration', 3, { goal: 8 }),
-        makeBlock('checklist', 'Care Actions', 4, { categories: ['Body', 'Mind', 'Home'], itemsPerCategory: 4 }),
-        makeBlock('gratitude', 'Gratitude', 5, { count: 3 }),
-      ]),
-    ], isFavorite: false, isPremium: false, downloads: 8380,
-    accentHue: '175', config: cfg({ primaryColor: '#042F2E', secondaryColor: '#0D9488', accentColor: '#99F6E4' }),
-  },
+  { id:'tpl_creative_content', name:'Content Creator', type:'creative', description:'Social media content calendar for creators and influencers.', thumbnail:'', category:'Business', tags:['creator','content','social'], pages:PLANNER_TYPE_PAGES.business(), isFavorite:false, isPremium:true, isTrending:true, downloads:5670, accentHue:'270', themeId:'pastelDreams', config:cfg({ primaryColor:'#6A1B9A', accentColor:'#CE93D8' }) },
+  { id:'tpl_creative_design', name:'Design Sprint', type:'creative', description:'Weekly design sprint planning with client briefs and deliverables.', thumbnail:'', category:'Business', tags:['design','sprint','creative'], pages:PLANNER_TYPE_PAGES.business(), isFavorite:false, isPremium:true, downloads:2341, accentHue:'200', themeId:'tropical', config:cfg({ primaryColor:'#004D40', accentColor:'#FFD54F' }) },
 ]
 
-export const TEMPLATE_CATEGORIES = [
-  'All', 'Daily', 'Weekly', 'Monthly',
-  'Tracker', 'Finance', 'Wellness', 'Fitness',
-  'Academic', 'Business', 'Journal', 'Creative', 'Life', 'Home', 'Etsy',
-]
+export const TEMPLATE_CATEGORIES = [...new Set(TEMPLATES.map(t => t.category))].sort()

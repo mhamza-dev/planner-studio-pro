@@ -3,6 +3,7 @@ export type PlannerType =
   | 'daily' | 'weekly' | 'monthly' | 'habit' | 'budget'
   | 'wellness' | 'fitness' | 'student' | 'business'
   | 'journal' | 'workbook' | 'worksheet' | 'creative'
+  | 'adhd' | 'teacher' | 'wedding' | 'kids' | 'finance'
 
 export type PlannerStatus = 'draft' | 'active' | 'archived' | 'sold'
 export type PageSize = 'A4' | 'Letter' | 'A5' | 'Half-Letter' | 'Square'
@@ -12,30 +13,29 @@ export type PageNumberStyle = 'numeric' | 'roman' | 'alpha' | 'hidden'
 export type BackgroundPattern = 'none' | 'dots' | 'grid' | 'lines' | 'crosshatch' | 'diagonal'
 export type BorderStyle = 'none' | 'hairline' | 'solid' | 'double' | 'dashed' | 'corner-marks'
 export type DividerStyle = 'solid' | 'dashed' | 'dotted' | 'double' | 'arrows' | 'dots-spaced' | 'thick' | 'fade'
+export type ThemeId = string
 
 // ─── Block Types ──────────────────────────────────────────────────────────────
 export type BlockType =
-  // Structure
   | 'header' | 'date-header' | 'divider' | 'spacer' | 'two-column' | 'cover-title' | 'table-of-contents'
-  // Planning
   | 'time-slots' | 'todo-list' | 'goal-section' | 'priority-matrix'
   | 'week-grid' | 'month-calendar' | 'countdown' | 'kanban' | 'checklist'
   | 'social-calendar' | 'etsy-listing'
-  // Writing
   | 'notes' | 'reflection' | 'gratitude' | 'custom-text' | 'quote-block'
   | 'brain-dump' | 'focus-block' | 'meeting-notes' | 'reading-log'
-  // Tracking
   | 'habit-grid' | 'mood-tracker' | 'water-tracker' | 'sleep-tracker'
   | 'workout-log' | 'meal-planner' | 'meal-plan-week' | 'progress-bar' | 'savings-tracker' | 'contact-card'
   | 'password-log' | 'cleaning-zone' | 'vision-board'
-  // Finance
   | 'budget-row' | 'expense-tracker'
-  // Academic
   | 'class-schedule' | 'project-tracker'
-  // Decorative
   | 'icon-block' | 'divider-styled' | 'accent-shape'
+  | 'debt-tracker' | 'bill-tracker' | 'sinking-funds'
+  | 'adhd-brain-dump' | 'adhd-routine' | 'adhd-reward'
+  | 'lesson-plan' | 'grade-book' | 'attendance'
+  | 'wedding-checklist' | 'vendor-tracker' | 'seating-chart'
+  | 'chore-chart' | 'reward-chart' | 'sticker-grid'
+  | 'cover-builder'
 
-// ─── Block & Page Models ──────────────────────────────────────────────────────
 export interface FontConfig {
   family: string
   size: number
@@ -108,6 +108,7 @@ export interface PlannerConfig {
   logoUrl?: string
   backgroundPattern?: BackgroundPattern
   borderStyle?: BorderStyle
+  themeId?: ThemeId
 }
 
 export interface Planner {
@@ -122,6 +123,7 @@ export interface Planner {
   tags: string[]
   folderId?: string
   thumbnail?: string
+  themeId?: ThemeId
   createdAt: string
   updatedAt: string
   version: number
@@ -136,7 +138,6 @@ export interface HistorySnapshot {
   config: PlannerConfig
 }
 
-// ─── Templates ────────────────────────────────────────────────────────────────
 export interface Template {
   id: string
   name: string
@@ -150,11 +151,13 @@ export interface Template {
   config: PlannerConfig
   isFavorite: boolean
   isPremium: boolean
+  isBestseller?: boolean
+  isTrending?: boolean
   downloads: number
   accentHue: string
+  themeId?: ThemeId
 }
 
-// ─── Folders ──────────────────────────────────────────────────────────────────
 export interface PlannerFolder {
   id: string
   name: string
@@ -163,7 +166,6 @@ export interface PlannerFolder {
   createdAt: string
 }
 
-// ─── Export ───────────────────────────────────────────────────────────────────
 export interface ExportConfig {
   format: ExportFormat
   pageSize: PageSize
@@ -186,7 +188,6 @@ export interface DownloadRecord {
   createdAt: string
 }
 
-// ─── Settings ─────────────────────────────────────────────────────────────────
 export interface AppSettings {
   theme: 'light' | 'dark' | 'system'
   language: string
@@ -201,9 +202,9 @@ export interface AppSettings {
   showMiniMap: boolean
   reducedMotion: boolean
   fontSize: 'sm' | 'md' | 'lg'
+  defaultThemeId: ThemeId
 }
 
-// ─── Analytics ────────────────────────────────────────────────────────────────
 export interface UsageStats {
   plannersCreated: number
   blocksAdded: number
@@ -214,7 +215,6 @@ export interface UsageStats {
   lastActive: string
 }
 
-// ─── Etsy ─────────────────────────────────────────────────────────────────────
 export interface EtsyListingData {
   plannerId: string
   title: string
@@ -229,7 +229,6 @@ export interface EtsyListingData {
   generatedAt: string
 }
 
-// ─── Block Preset ────────────────────────────────────────────────────────────
 export interface BlockPreset {
   id: string
   name: string
@@ -239,7 +238,6 @@ export interface BlockPreset {
   createdAt: string
 }
 
-// ─── Toast ────────────────────────────────────────────────────────────────────
 export interface Toast {
   id: string
   type: 'success' | 'error' | 'info' | 'warning'
@@ -248,7 +246,6 @@ export interface Toast {
   duration?: number
 }
 
-// ─── Command Palette ──────────────────────────────────────────────────────────
 export interface CommandItem {
   id: string
   label: string
@@ -257,4 +254,15 @@ export interface CommandItem {
   category: string
   shortcut?: string
   action: () => void
+}
+
+// ─── Cover Builder ────────────────────────────────────────────────────────────
+export interface CoverConfig {
+  title: string
+  subtitle: string
+  author: string
+  year: string
+  monogram: string
+  quote: string
+  layout: 'minimal' | 'elegant' | 'magazine' | 'scrapbook' | 'modern' | 'luxury' | 'floral' | 'boho'
 }

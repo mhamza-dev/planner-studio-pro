@@ -8,9 +8,11 @@ interface TemplateState {
   favorites: string[]
   searchQuery: string
   selectedCategory: string
+  activeThemeId: string
   toggleFavorite: (id: string) => void
   setSearchQuery: (q: string) => void
   setSelectedCategory: (cat: string) => void
+  setActiveThemeId: (id: string) => void
   getFiltered: () => Template[]
 }
 
@@ -21,6 +23,7 @@ export const useTemplateStore = create<TemplateState>()(
       favorites: [],
       searchQuery: '',
       selectedCategory: 'All',
+      activeThemeId: 'minimalist',
       toggleFavorite: (id) => {
         set(s => {
           const favs = s.favorites.includes(id)
@@ -34,6 +37,7 @@ export const useTemplateStore = create<TemplateState>()(
       },
       setSearchQuery: (q) => set({ searchQuery: q }),
       setSelectedCategory: (cat) => set({ selectedCategory: cat }),
+      setActiveThemeId: (id) => set({ activeThemeId: id }),
       getFiltered: () => {
         const { templates, searchQuery, selectedCategory } = get()
         return templates.filter(t => {
@@ -46,6 +50,6 @@ export const useTemplateStore = create<TemplateState>()(
         })
       },
     }),
-    { name: 'psp-templates-v2', partialize: s => ({ favorites: s.favorites }) }
+    { name: 'psp-templates-v3', partialize: s => ({ favorites: s.favorites, activeThemeId: s.activeThemeId }) }
   )
 )

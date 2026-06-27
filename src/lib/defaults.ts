@@ -25,6 +25,7 @@ export const DEFAULT_CONFIG: PlannerConfig = {
   weekStartsOn: 1,
   backgroundPattern: 'none',
   borderStyle: 'none',
+  themeId: 'minimalist',
 }
 
 export function makeBlock(
@@ -65,7 +66,6 @@ export function makePage(
   }
 }
 
-// ── Default block configs per type ────────────────────────────────────────────
 export function getDefaultBlockConfig(type: BlockType): Record<string, unknown> {
   switch (type) {
     case 'time-slots': return { startHour: 6, endHour: 22, interval: 60 }
@@ -104,15 +104,30 @@ export function getDefaultBlockConfig(type: BlockType): Record<string, unknown> 
     case 'cleaning-zone': return { rooms: ['Kitchen', 'Bath', 'Bedroom', 'Living'], itemsPerRoom: 4 }
     case 'meal-plan-week': return { meals: ['Breakfast', 'Lunch', 'Dinner', 'Snack'] }
     case 'vision-board': return { slots: 6 }
+    case 'debt-tracker': return { rows: 6 }
+    case 'bill-tracker': return { rows: 8 }
+    case 'sinking-funds': return { funds: 4 }
+    case 'adhd-brain-dump': return { lines: 14 }
+    case 'adhd-routine': return { steps: 8 }
+    case 'adhd-reward': return { tasks: 5 }
+    case 'lesson-plan': return { periods: 5 }
+    case 'grade-book': return { students: 10 }
+    case 'attendance': return { students: 10, days: 20 }
+    case 'wedding-checklist': return { categories: ['Venue', 'Catering', 'Flowers', 'Attire'], itemsPerCat: 4 }
+    case 'vendor-tracker': return { vendors: 6 }
+    case 'seating-chart': return { tables: 6 }
+    case 'chore-chart': return { chores: 6, days: 7 }
+    case 'reward-chart': return { tasks: 5, rewards: 3 }
+    case 'sticker-grid': return { cols: 4, rows: 4 }
     default: return {}
   }
 }
 
-// ── Planner type pages ────────────────────────────────────────────────────────
-export const PLANNER_TYPE_PAGES: Record<PlannerType, () => PlannerPage[]> = {
+// ── Planner type → default pages ─────────────────────────────────────────────
+export const PLANNER_TYPE_PAGES: Record<string, () => PlannerPage[]> = {
   daily: () => [
     makePage('Daily Plan', 0, [
-      makeBlock('cover-title', 'Cover', 0, { title: 'Daily Planner', subtitle: new Date().toLocaleDateString('en-US', { year: 'numeric' }) }),
+      makeBlock('cover-title', 'Cover', 0, { title: 'Daily Planner', subtitle: String(new Date().getFullYear()) }),
     ]),
     makePage('Today', 1, [
       makeBlock('date-header', 'Date', 0, { showDay: true, showDate: true }),
@@ -131,7 +146,8 @@ export const PLANNER_TYPE_PAGES: Record<PlannerType, () => PlannerPage[]> = {
       makeBlock('date-header', 'Week', 0, { showWeekNumber: true }),
       makeBlock('week-grid', 'Weekly Grid', 1, { showTimeSlots: false }),
       makeBlock('goal-section', 'Weekly Goals', 2, { count: 5 }),
-      makeBlock('notes', 'Notes', 3, { lines: 4 }),
+      makeBlock('habit-grid', 'Habits', 3, { habitCount: 5, daysInMonth: 7 }),
+      makeBlock('notes', 'Notes', 4, { lines: 4 }),
     ]),
   ],
 
@@ -167,6 +183,16 @@ export const PLANNER_TYPE_PAGES: Record<PlannerType, () => PlannerPage[]> = {
     ]),
   ],
 
+  finance: () => [
+    makePage('Finance Planner', 0, [
+      makeBlock('date-header', 'Month', 0, { showMonth: true }),
+      makeBlock('budget-row', 'Budget', 1, { rows: 8 }),
+      makeBlock('bill-tracker', 'Bills', 2, { rows: 8 }),
+      makeBlock('savings-tracker', 'Savings Goal', 3, { goal: 5000, current: 0, currency: '$' }),
+      makeBlock('notes', 'Notes', 4, { lines: 4 }),
+    ]),
+  ],
+
   wellness: () => [
     makePage('Wellness Log', 0, [
       makeBlock('date-header', 'Date', 0, { showDate: true }),
@@ -186,7 +212,8 @@ export const PLANNER_TYPE_PAGES: Record<PlannerType, () => PlannerPage[]> = {
       makeBlock('workout-log', 'Workout', 1, { exerciseCount: 8 }),
       makeBlock('progress-bar', 'Completion', 2, { label: 'Workout Complete', value: 0, max: 100 }),
       makeBlock('water-tracker', 'Hydration', 3, { goal: 10 }),
-      makeBlock('notes', 'Notes & PRs', 4, { lines: 4 }),
+      makeBlock('meal-planner', 'Nutrition', 4),
+      makeBlock('notes', 'Notes & PRs', 5, { lines: 4 }),
     ]),
   ],
 
@@ -198,6 +225,16 @@ export const PLANNER_TYPE_PAGES: Record<PlannerType, () => PlannerPage[]> = {
       makeBlock('goal-section', 'Study Goals', 3, { count: 3 }),
       makeBlock('countdown', 'Exam Countdown', 4, { label: 'Next Exam' }),
       makeBlock('notes', 'Notes', 5, { lines: 4 }),
+    ]),
+  ],
+
+  teacher: () => [
+    makePage('Teacher Planner', 0, [
+      makeBlock('date-header', 'Date', 0, { showDate: true }),
+      makeBlock('lesson-plan', 'Lessons', 1, { periods: 5 }),
+      makeBlock('todo-list', 'To-Do', 2, { count: 6 }),
+      makeBlock('attendance', 'Attendance', 3, { students: 10, days: 5 }),
+      makeBlock('notes', 'Notes', 4, { lines: 5 }),
     ]),
   ],
 
@@ -221,6 +258,39 @@ export const PLANNER_TYPE_PAGES: Record<PlannerType, () => PlannerPage[]> = {
       makeBlock('gratitude', 'Gratitude', 4, { count: 3 }),
       makeBlock('goal-section', 'Intentions', 5, { count: 3 }),
       makeBlock('reflection', 'Evening Reflection', 6),
+    ]),
+  ],
+
+  adhd: () => [
+    makePage('ADHD Daily', 0, [
+      makeBlock('date-header', 'Date', 0, { showDay: true, showDate: true }),
+      makeBlock('goal-section', 'Top 3 Tasks', 1, { count: 3 }),
+      makeBlock('time-slots', 'Time Blocks', 2, { startHour: 8, endHour: 20, interval: 60 }),
+      makeBlock('adhd-brain-dump', 'Brain Dump', 3, { lines: 10 }),
+      makeBlock('adhd-routine', 'Routine', 4, { steps: 6 }),
+      makeBlock('adhd-reward', 'Rewards', 5, { tasks: 3 }),
+      makeBlock('notes', 'Notes', 6, { lines: 4 }),
+    ]),
+  ],
+
+  wedding: () => [
+    makePage('Wedding Planner', 0, [
+      makeBlock('cover-title', 'Cover', 0, { title: 'Wedding Planner', subtitle: '2025' }),
+    ]),
+    makePage('Planning', 1, [
+      makeBlock('wedding-checklist', 'Master Checklist', 0, { categories: ['Venue', 'Catering', 'Flowers', 'Attire'], itemsPerCat: 4 }),
+      makeBlock('vendor-tracker', 'Vendors', 1, { vendors: 6 }),
+      makeBlock('budget-row', 'Budget', 2, { rows: 8 }),
+      makeBlock('notes', 'Notes', 3, { lines: 4 }),
+    ]),
+  ],
+
+  kids: () => [
+    makePage('Kids Planner', 0, [
+      makeBlock('chore-chart', 'Chores', 0, { chores: 6, days: 7 }),
+      makeBlock('reward-chart', 'Rewards', 1, { tasks: 5, rewards: 3 }),
+      makeBlock('todo-list', 'Today\'s Tasks', 2, { count: 5 }),
+      makeBlock('notes', 'Notes', 3, { lines: 3 }),
     ]),
   ],
 
@@ -257,47 +327,40 @@ export const PLANNER_TYPE_PAGES: Record<PlannerType, () => PlannerPage[]> = {
   ],
 }
 
-// ── Labels & descriptions ─────────────────────────────────────────────────────
-export const PLANNER_TYPE_LABELS: Record<PlannerType, string> = {
-  daily: 'Daily Planner',
-  weekly: 'Weekly Planner',
-  monthly: 'Monthly Planner',
-  habit: 'Habit Tracker',
-  budget: 'Budget Planner',
-  wellness: 'Wellness Journal',
-  fitness: 'Fitness Tracker',
-  student: 'Student Planner',
-  business: 'Business Planner',
-  journal: 'Journal',
-  workbook: 'Workbook',
-  worksheet: 'Worksheet',
-  creative: 'Creative Board',
+export const PLANNER_TYPE_LABELS: Record<string, string> = {
+  daily: 'Daily Planner', weekly: 'Weekly Planner', monthly: 'Monthly Planner',
+  habit: 'Habit Tracker', budget: 'Budget Planner', wellness: 'Wellness Journal',
+  fitness: 'Fitness Tracker', student: 'Student Planner', business: 'Business Planner',
+  journal: 'Journal', workbook: 'Workbook', worksheet: 'Worksheet', creative: 'Creative Board',
+  adhd: 'ADHD Planner', teacher: 'Teacher Planner', wedding: 'Wedding Planner',
+  kids: 'Kids Planner', finance: 'Finance Planner',
 }
 
-export const PLANNER_TYPE_DESCRIPTIONS: Record<PlannerType, string> = {
+export const PLANNER_TYPE_DESCRIPTIONS: Record<string, string> = {
   daily: 'Hour-by-hour scheduling with priorities and reflection',
   weekly: 'Full week overview with goals and task tracking',
   monthly: 'Calendar view with monthly goals and habit tracking',
   habit: 'Visual grid to track habits daily across the month',
   budget: 'Income, expenses, and savings in one place',
+  finance: 'Full financial planning with bills and savings',
   wellness: 'Mind and body daily check-ins with mood and sleep',
   fitness: 'Workout logging with sets, reps, and progress',
   student: 'Class schedule, assignments, and study goals',
+  teacher: 'Lesson planning, attendance, and grade tracking',
   business: 'Priority matrix, projects, and meeting notes',
   journal: 'Daily journaling with guided prompts and reflection',
+  adhd: 'Brain-friendly planner with visual cues and focus tools',
+  wedding: 'Complete wedding planning from engagement to big day',
+  kids: 'Fun charts and reward systems for children',
   workbook: 'Educational content with notes and action items',
   worksheet: 'Printable fill-in worksheets for any topic',
   creative: 'Brainstorm, plan, and track creative projects',
 }
 
 export const PLANNER_STATUS_LABELS: Record<string, string> = {
-  draft: 'Draft',
-  active: 'Active',
-  archived: 'Archived',
-  sold: 'Sold on Etsy',
+  draft: 'Draft', active: 'Active', archived: 'Archived', sold: 'Sold on Etsy',
 }
 
-// ── Palette presets ───────────────────────────────────────────────────────────
 export const PALETTE_PRESETS = [
   { name: 'Midnight', primary: '#0F172A', secondary: '#475569', accent: '#E2E8F0', bg: '#F8FAFC' },
   { name: 'Indigo', primary: '#1E1B4B', secondary: '#4338CA', accent: '#C7D2FE', bg: '#EEF2FF' },
@@ -313,7 +376,6 @@ export const PALETTE_PRESETS = [
   { name: 'Teal', primary: '#042F2E', secondary: '#0D9488', accent: '#99F6E4', bg: '#F0FDFA' },
 ]
 
-// ── Google Fonts ──────────────────────────────────────────────────────────────
 export const CURATED_FONTS = [
   { name: 'Inter', category: 'Sans-serif' },
   { name: 'Plus Jakarta Sans', category: 'Sans-serif' },
@@ -337,41 +399,24 @@ export const CURATED_FONTS = [
   { name: 'Space Mono', category: 'Monospace' },
 ]
 
-// ── Color swatches ────────────────────────────────────────────────────────────
 export const COLOR_SWATCHES = [
-  { name: 'Midnight', value: '#0F172A' },
-  { name: 'Charcoal', value: '#1E293B' },
-  { name: 'Steel', value: '#334155' },
-  { name: 'Mist', value: '#94A3B8' },
-  { name: 'Cloud', value: '#E2E8F0' },
-  { name: 'Snow', value: '#F8FAFC' },
-  { name: 'Ivory', value: '#FFFDF7' },
-  { name: 'Cream', value: '#FAF7F2' },
-  { name: 'Parchment', value: '#F5EDD6' },
-  { name: 'Sage', value: '#84A98C' },
-  { name: 'Forest', value: '#52796F' },
-  { name: 'Pine', value: '#344E41' },
-  { name: 'Mint', value: '#B7E4C7' },
-  { name: 'Blush', value: '#E8A598' },
-  { name: 'Rose', value: '#FB7185' },
-  { name: 'Crimson', value: '#BE123C' },
-  { name: 'Dusty Pink', value: '#F2C4CE' },
-  { name: 'Lavender', value: '#C4B5FD' },
-  { name: 'Violet', value: '#7C3AED' },
-  { name: 'Indigo', value: '#4338CA' },
-  { name: 'Periwinkle', value: '#818CF8' },
-  { name: 'Sky', value: '#38BDF8' },
-  { name: 'Ocean', value: '#0369A1' },
-  { name: 'Navy', value: '#1E3A5F' },
-  { name: 'Gold', value: '#C9A96E' },
-  { name: 'Amber', value: '#F59E0B' },
-  { name: 'Caramel', value: '#A07840' },
-  { name: 'Sand', value: '#E8D5B4' },
-  { name: 'Terracotta', value: '#C0695C' },
-  { name: 'Rust', value: '#9A3412' },
+  { name: 'Midnight', value: '#0F172A' }, { name: 'Charcoal', value: '#1E293B' },
+  { name: 'Steel', value: '#334155' }, { name: 'Mist', value: '#94A3B8' },
+  { name: 'Cloud', value: '#E2E8F0' }, { name: 'Snow', value: '#F8FAFC' },
+  { name: 'Ivory', value: '#FFFDF7' }, { name: 'Cream', value: '#FAF7F2' },
+  { name: 'Parchment', value: '#F5EDD6' }, { name: 'Sage', value: '#84A98C' },
+  { name: 'Forest', value: '#52796F' }, { name: 'Pine', value: '#344E41' },
+  { name: 'Mint', value: '#B7E4C7' }, { name: 'Blush', value: '#E8A598' },
+  { name: 'Rose', value: '#FB7185' }, { name: 'Crimson', value: '#BE123C' },
+  { name: 'Dusty Pink', value: '#F2C4CE' }, { name: 'Lavender', value: '#C4B5FD' },
+  { name: 'Violet', value: '#7C3AED' }, { name: 'Indigo', value: '#4338CA' },
+  { name: 'Periwinkle', value: '#818CF8' }, { name: 'Sky', value: '#38BDF8' },
+  { name: 'Ocean', value: '#0369A1' }, { name: 'Navy', value: '#1E3A5F' },
+  { name: 'Gold', value: '#C9A96E' }, { name: 'Amber', value: '#F59E0B' },
+  { name: 'Caramel', value: '#A07840' }, { name: 'Sand', value: '#E8D5B4' },
+  { name: 'Terracotta', value: '#C0695C' }, { name: 'Rust', value: '#9A3412' },
 ]
 
-// ── Motivational quotes ────────────────────────────────────────────────────────
 export const MOTIVATIONAL_QUOTES = [
   { quote: 'The secret of getting ahead is getting started.', author: 'Mark Twain' },
   { quote: 'It always seems impossible until it\'s done.', author: 'Nelson Mandela' },
@@ -380,9 +425,7 @@ export const MOTIVATIONAL_QUOTES = [
   { quote: 'Plan your work and work your plan.', author: 'Napoleon Hill' },
   { quote: 'A goal without a plan is just a wish.', author: 'Antoine de Saint-Exupéry' },
   { quote: 'Focus on being productive instead of busy.', author: 'Tim Ferriss' },
-  { quote: 'The key is not to prioritize what\'s on your schedule, but to schedule your priorities.', author: 'Stephen Covey' },
   { quote: 'Done is better than perfect.', author: 'Sheryl Sandberg' },
   { quote: 'Small daily improvements are the key to staggering long-term results.', author: 'Robin Sharma' },
-  { quote: 'Your time is limited, so don\'t waste it living someone else\'s life.', author: 'Steve Jobs' },
   { quote: 'What gets scheduled gets done.', author: 'Michael Hyatt' },
 ]

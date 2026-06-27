@@ -26,6 +26,47 @@
   .toolbar-shadow { box-shadow: 0 1px 0 rgba(148,163,184,.35), 0 8px 24px rgba(15,23,42,.04); }
   .float-shadow { box-shadow: 0 14px 42px rgba(15,23,42,.18), 0 0 0 1px rgba(255,255,255,.55) inset; }
   .skeleton { background: linear-gradient(90deg,#F4F4F5 25%,#FAFAFA 50%,#F4F4F5 75%); background-size:200% 100%; animation: shimmer 1.8s ease-in-out infinite; }
+  /* Theme-aware card styles */
+  .theme-card { @apply rounded-2xl border overflow-hidden transition-all duration-200 hover:-translate-y-1; }
+  .theme-card:hover { box-shadow: 0 20px 48px rgba(0,0,0,0.14), 0 4px 12px rgba(0,0,0,0.06); }
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fade-in-up { animation: fadeInUp 0.3s ease both; }
+.animate-slide-in { animation: slideIn 0.25s ease both; }
+.animate-scale-in { animation: scaleIn 0.2s ease both; }
+
+/* Premium gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #1E40AF, #7C3AED, #DB2777);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Sticker hover effect */
+.sticker-btn:hover {
+  transform: scale(1.2) rotate(5deg);
+  transition: transform 0.15s ease;
 }
 
 @media print {

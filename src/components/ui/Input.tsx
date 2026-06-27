@@ -1,7 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Check, ChevronDown } from 'lucide-react'
 import { cn } from '@/utils/cn'
+import { useFloatingMenu } from '@/utils/floatingMenu'
 
 // ── Label ────────────────────────────────────────────────────────────────────
 export const Label: React.FC<React.LabelHTMLAttributes<HTMLLabelElement>> = ({ className, children, ...props }) => (
@@ -140,11 +142,11 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
   label, value, onChange, options, placeholder = 'Select...', className, buttonClassName,
 }) => {
   const [open, setOpen] = useState(false)
-  const ref = useRef<HTMLDivElement>(null)
+  const { containerRef, menuRef, menuStyle, isOutside } = useFloatingMenu(open, 'left', true)
   const selected = options.find(o => o.value === value)
 
   useEffect(() => {
-    const h = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false) }
+    const h = (e: MouseEvent) => { if (isOutside(e.target as Node)) setOpen(false) }
     const k = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false) }
     document.addEventListener('mousedown', h)
     document.addEventListener('keydown', k)
@@ -152,10 +154,10 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
       document.removeEventListener('mousedown', h)
       document.removeEventListener('keydown', k)
     }
-  }, [])
+  }, [isOutside])
 
   return (
-    <div className={cn('relative z-100', className)} ref={ref}>
+    <div className={cn('relative', className)} ref={containerRef}>
       {label && <Label>{label}</Label>}
       <button
         type="button"
@@ -175,46 +177,51 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
         </span>
         <ChevronDown size={14} className={cn('shrink-0 text-ink-faint transition-transform', open && 'rotate-180 text-accent')}/>
       </button>
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, y: -6, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -4, scale: 0.97 }}
-            transition={{ duration: 0.14, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute left-0 right-0 z-50 mt-2 max-h-72 overflow-y-auto rounded-xl border border-white/80 bg-white/95 p-1.5 shadow-float backdrop-blur-xl"
-            role="listbox"
-          >
-            {options.map(option => {
-              const active = option.value === value
-              return (
-                <button
-                  key={option.value}
-                  type="button"
-                  role="option"
-                  aria-selected={active}
-                  onClick={() => { onChange(option.value); setOpen(false) }}
-                  className={cn(
-                    'group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left transition-colors',
-                    active ? 'bg-accent/10 text-accent' : 'text-primary hover:bg-primary hover:text-white',
-                  )}
-                >
-                  <span className={cn(
-                    'flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border',
-                    active ? 'border-blue-100 bg-blue-50 text-accent' : 'border-border bg-white text-ink-muted group-hover:border-white/20 group-hover:bg-white/10 group-hover:text-white',
-                  )}>
-                    {active ? <Check size={13}/> : option.icon}
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate text-xs font-semibold">{option.label}</span>
-                    {option.description && <span className="block truncate text-[10px] text-ink-muted group-hover:text-white/65">{option.description}</span>}
-                  </span>
-                </button>
-              )
-            })}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {createPortal(
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              ref={menuRef}
+              style={menuStyle}
+              initial={{ opacity: 0, y: -6, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -4, scale: 0.97 }}
+              transition={{ duration: 0.14, ease: [0.16, 1, 0.3, 1] }}
+              className="max-h-72 overflow-y-auto rounded-xl border border-white/80 bg-white/95 p-1.5 shadow-float backdrop-blur-xl"
+              role="listbox"
+            >
+              {options.map(option => {
+                const active = option.value === value
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    role="option"
+                    aria-selected={active}
+                    onClick={() => { onChange(option.value); setOpen(false) }}
+                    className={cn(
+                      'group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left transition-colors',
+                      active ? 'bg-accent/10 text-accent' : 'text-primary hover:bg-primary hover:text-white',
+                    )}
+                  >
+                    <span className={cn(
+                      'flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border',
+                      active ? 'border-blue-100 bg-blue-50 text-accent' : 'border-border bg-white text-ink-muted group-hover:border-white/20 group-hover:bg-white/10 group-hover:text-white',
+                    )}>
+                      {active ? <Check size={13}/> : option.icon}
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-xs font-semibold">{option.label}</span>
+                      {option.description && <span className="block truncate text-[10px] text-ink-muted group-hover:text-white/65">{option.description}</span>}
+                    </span>
+                  </button>
+                )
+              })}
+            </motion.div>
+          )}
+        </AnimatePresence>,
+        document.body,
+      )}
     </div>
   )
 }

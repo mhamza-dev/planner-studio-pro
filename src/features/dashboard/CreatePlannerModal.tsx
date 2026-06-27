@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import {
   Calendar, CalendarDays, CalendarCheck, CheckSquare, CreditCard,
   Heart, Dumbbell, GraduationCap, Briefcase, BookOpen, FileText,
-  Grid2X2, Palette,
+  Grid2X2, Palette, Brain, School, Gem, Star, Wallet,
 } from 'lucide-react'
 import { Modal } from '@/components/ui/Modal'
 import { Button } from '@/components/ui/Button'
@@ -30,6 +30,11 @@ const TYPE_META: Record<PlannerType, { icon: React.ReactNode; color: string }> =
   workbook:  { icon: <FileText size={20}/>,       color: '#06B6D4' },
   worksheet: { icon: <Grid2X2 size={20}/>,        color: '#6366F1' },
   creative:  { icon: <Palette size={20}/>,        color: '#A855F7' },
+  adhd:      { icon: <Brain size={20}/>,          color: '#FF6B9D' },
+  teacher:   { icon: <School size={20}/>,         color: '#20B2AA' },
+  wedding:   { icon: <Gem size={20}/>,            color: '#C2185B' },
+  kids:      { icon: <Star size={20}/>,           color: '#FF8C00' },
+  finance:   { icon: <Wallet size={20}/>,         color: '#2E8B57' },
 }
 
 export const CreatePlannerModal: React.FC = () => {

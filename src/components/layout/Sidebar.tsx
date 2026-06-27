@@ -4,27 +4,29 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   LayoutDashboard, PenTool, BookOpen, Download, Settings,
   BarChart3, ShoppingBag, ChevronLeft, ChevronRight, Pen,
-  Sparkles, FolderOpen,
+  Sparkles, Palette,
 } from 'lucide-react'
 import { cn } from '@/utils/cn'
 import { useUIStore } from '@/store/uiStore'
-import { usePlannerStore } from '@/store/plannerStore'
+import { useTemplateStore } from '@/store/templateStore'
+import { THEMES } from '@/themes'
 import { Tooltip } from '@/components/ui/index'
 
 const NAV = [
-  { to: '/', label: 'Dashboard', icon: LayoutDashboard, end: true },
-  { to: '/builder', label: 'Builder', icon: PenTool },
-  { to: '/templates', label: 'Templates', icon: BookOpen },
-  { to: '/analytics', label: 'Analytics', icon: BarChart3 },
-  { to: '/etsy', label: 'Etsy Tools', icon: ShoppingBag },
-  { to: '/downloads', label: 'Downloads', icon: Download },
-  { to: '/settings', label: 'Settings', icon: Settings },
+  { to: '/',           label: 'Dashboard',  icon: LayoutDashboard, end: true },
+  { to: '/builder',    label: 'Builder',    icon: PenTool },
+  { to: '/templates',  label: 'Templates',  icon: BookOpen },
+  { to: '/analytics',  label: 'Analytics',  icon: BarChart3 },
+  { to: '/etsy',       label: 'Etsy Tools', icon: ShoppingBag },
+  { to: '/downloads',  label: 'Downloads',  icon: Download },
+  { to: '/settings',   label: 'Settings',   icon: Settings },
 ]
 
 export const Sidebar: React.FC = () => {
   const { sidebarCollapsed, toggleSidebar } = useUIStore()
-  const { planners } = usePlannerStore()
+  const { activeThemeId } = useTemplateStore()
   const location = useLocation()
+  const activeTheme = THEMES[activeThemeId] || THEMES.minimalist
 
   return (
     <motion.aside
@@ -85,21 +87,36 @@ export const Sidebar: React.FC = () => {
             </NavLink>
           )
           return sidebarCollapsed
-            ? <Tooltip key={to} content={label} side="right">{link}</Tooltip>
+            ? <Tooltip key={to} content={label} side="right" delay={100}>{link}</Tooltip>
             : <div key={to}>{link}</div>
         })}
       </nav>
 
-      {/* Bottom */}
-      <div className="px-2 pb-3 pt-2 border-t border-white/10 shrink-0 space-y-1">
+      {/* Active theme indicator */}
+      <div className="px-2 pb-1 pt-2 border-t border-white/10 shrink-0 space-y-1">
         {!sidebarCollapsed && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            className="mb-2 mx-0.5 p-3 rounded-xl bg-white/10 border border-white/10">
-            <div className="flex items-center gap-1.5 mb-1">
-              <Sparkles size={11} className="text-blue-200 shrink-0" />
-              <span className="text-xs font-semibold text-white">Pro Plan</span>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            {/* Theme pill */}
+            <NavLink to="/templates"
+              className="mb-2 mx-0.5 p-2.5 rounded-xl flex items-center gap-2.5 hover:bg-white/10 transition-colors cursor-pointer border border-white/10">
+              <div className="w-7 h-7 rounded-lg flex items-center justify-center text-base shrink-0"
+                style={{ background: activeTheme.gradient }}>
+                {activeTheme.emoji}
+              </div>
+              <div className="min-w-0">
+                <div className="text-[10px] font-medium text-slate-400 leading-none mb-0.5 flex items-center gap-1">
+                  <Palette size={9} /> Active Theme
+                </div>
+                <div className="text-xs font-semibold text-white truncate">{activeTheme.name}</div>
+              </div>
+            </NavLink>
+            <div className="mb-2 mx-0.5 p-3 rounded-xl bg-white/10 border border-white/10">
+              <div className="flex items-center gap-1.5 mb-1">
+                <Sparkles size={11} className="text-blue-200 shrink-0" />
+                <span className="text-xs font-semibold text-white">Pro Plan</span>
+              </div>
+              <p className="text-[11px] text-slate-300 leading-relaxed">Unlimited exports & premium templates</p>
             </div>
-            <p className="text-[11px] text-slate-300 leading-relaxed">Unlimited exports & premium templates</p>
           </motion.div>
         )}
         <button onClick={toggleSidebar}

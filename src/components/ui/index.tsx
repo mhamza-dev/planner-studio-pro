@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect, createContext, useContext } from 'react'
+import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { CheckCircle, AlertCircle, Info, AlertTriangle, X, Check } from 'lucide-react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/utils/cn'
+import { useFloatingMenu } from '@/utils/floatingMenu'
 import type { Toast } from '@/types'
 import { useUIStore } from '@/store/uiStore'
 
@@ -111,11 +113,11 @@ interface DropdownProps {
 }
 export const Dropdown: React.FC<DropdownProps> = ({ trigger, items, align = 'left', className, width = 'md' }) => {
   const [open, setOpen] = useState(false)
-  const ref = useRef<HTMLDivElement>(null)
+  const { containerRef, menuRef, menuStyle, isOutside } = useFloatingMenu(open, align)
   const widths = { sm: 'min-w-[180px]', md: 'min-w-[220px]', lg: 'min-w-[280px]' }
 
   useEffect(() => {
-    const h = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false) }
+    const h = (e: MouseEvent) => { if (isOutside(e.target as Node)) setOpen(false) }
     const k = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setOpen(false)
     }
@@ -125,31 +127,34 @@ export const Dropdown: React.FC<DropdownProps> = ({ trigger, items, align = 'lef
       document.removeEventListener('mousedown', h)
       document.removeEventListener('keydown', k)
     }
-  }, [])
+  }, [isOutside])
 
   return (
-    <div ref={ref} className={cn('relative inline-flex', className)}>
+    <div ref={containerRef} className={cn('relative inline-flex', className)}>
       {React.cloneElement(trigger, {
         onClick: (e: React.MouseEvent) => { e.stopPropagation(); setOpen(o => !o) },
         'aria-expanded': open,
         'aria-haspopup': 'menu',
         className: cn(trigger.props.className, open && 'ring-2 ring-accent/30 bg-white'),
       })}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, y: -6, scale: 0.96, filter: 'blur(4px)' }}
-            animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
-            exit={{ opacity: 0, y: -4, scale: 0.97, filter: 'blur(3px)' }}
-            transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] }}
-            className={cn(
-              'absolute z-50 top-full mt-2 rounded-xl border border-white/80 bg-white/90 p-1.5 shadow-float backdrop-blur-xl',
-              'before:absolute before:inset-x-3 before:-top-px before:h-px before:bg-white/90',
-              widths[width],
-              align === 'right' ? 'right-0 origin-top-right' : 'left-0 origin-top-left',
-            )}
-            role="menu"
-          >
+      {createPortal(
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              ref={menuRef}
+              style={menuStyle}
+              initial={{ opacity: 0, y: -6, scale: 0.96, filter: 'blur(4px)' }}
+              animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+              exit={{ opacity: 0, y: -4, scale: 0.97, filter: 'blur(3px)' }}
+              transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] }}
+              className={cn(
+                'rounded-xl border border-white/80 bg-white/90 p-1.5 shadow-float backdrop-blur-xl',
+                'before:absolute before:inset-x-3 before:-top-px before:h-px before:bg-white/90',
+                widths[width],
+                align === 'right' ? 'origin-top-right' : 'origin-top-left',
+              )}
+              role="menu"
+            >
             {items.map((item, i) => item.separator
               ? <div key={i} className="my-1.5 h-px bg-gradient-to-r from-transparent via-border to-transparent"/>
               : (
@@ -195,9 +200,11 @@ export const Dropdown: React.FC<DropdownProps> = ({ trigger, items, align = 'lef
                 </button>
               )
             )}
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>,
+        document.body,
+      )}
     </div>
   )
 }
